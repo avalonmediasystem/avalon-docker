@@ -1,0 +1,5 @@
+default: &default
+  url: http://solr:8080/solr/avalon
+development: *default
+test: *default
+production: *default

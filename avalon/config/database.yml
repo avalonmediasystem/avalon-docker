@@ -1,0 +1,7 @@
+<%= ENV['RAILS_ENV'] %>:
+  adapter: postgresql
+  host: db
+  database: avalon
+  username: avalon
+  password: <%= ENV['AVALON_DB_PASSWORD'] %>
+  pool: 5

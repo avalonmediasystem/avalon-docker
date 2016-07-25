@@ -1,0 +1,7 @@
+default: &default
+  user: fedoraAdmin
+  password: fedoraAdmin
+  url: http://fedora:8080/fedora
+development: *default
+test: *default
+production: *default
