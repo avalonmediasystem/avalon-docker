@@ -1,0 +1,75 @@
+version: '2'
+
+volumes:
+  streaming:
+  database:
+  fedora:
+  work:
+    
+services:
+  db:
+    build: ./db
+    volumes:
+      - database:/data
+    environment:
+      - AVALON_DB_PASSWORD
+      - FEDORA_DB_PASSWORD
+      - PGDATA=/data
+      - POSTGRES_USER
+  fedora:
+    build: 
+      context: ./fedora
+      args:
+        - FEDORA_DB_PASSWORD
+        - FEDORA_VERSION
+    depends_on:
+      - db
+    volumes:
+      - fedora:/data
+  solr:
+    build: 
+      context: ./solr
+      args:
+        - AVALON_BRANCH
+    ports:
+      - "8983:8080"
+  matterhorn:
+    build: 
+      context: ./matterhorn
+      args:
+        - MATTERHORN_VER
+        - MATTERHORN_BRANCH
+    volumes:
+      - ./masterfiles:/masterfiles
+      - streaming:/streamfiles
+      - work:/work
+  avalon:
+    build: 
+      context: ./avalon
+      args:
+        - AVALON_BRANCH
+        - AVALON_SECRET_KEY_BASE
+    depends_on:
+    - db
+    - fedora
+    - solr
+    - matterhorn
+    environment:
+      - AVALON_DB_PASSWORD
+      - AVALON_SECRET_KEY_BASE
+    volumes:
+      - ./masterfiles:/masterfiles
+    ports:
+      - "8888:80"
+  streaming:
+    build: 
+      context: ./streaming
+      args:
+        - WOWZA_ADMIN_PASSWORD
+        - WOWZA_ADMIN_USER
+        - WOWZA_LICENSE_KEY
+        - WOWZA_SILENT_INSTALL_KEY
+    volumes:
+      - streaming:/streamfiles
+    ports:
+      - "1935:1935"
