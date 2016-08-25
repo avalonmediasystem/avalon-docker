@@ -1,6 +1,4 @@
 FROM    phusion/passenger-ruby22
-ENV     RAILS_ENV production
-ARG     AVALON_SECRET_KEY_BASE
 ARG     AVALON_BRANCH=master
 RUN     ["/usr/bin/apt-get","update"]
 RUN     ["/usr/bin/apt-get","install","-y","mediainfo","ffmpeg","x264","cmake","pkg-config","lsof"]
@@ -13,8 +11,15 @@ USER    app
 RUN     git clone --branch=${AVALON_BRANCH} --depth=1 https://github.com/avalonmediasystem/avalon.git
 ADD     Gemfile.local /home/app/avalon/
 ADD     config/* /home/app/avalon/config/
+ARG     RAILS_ENV=production
 RUN     cd avalon && \
-          bundle install --path=vendor/gems && \
+          bundle config build.nokogiri --use-system-libraries && \
+          bundle install --path=vendor/gems --without development test && \
+          cd ..
+ARG     BASE_URL=http://avalon:80/
+ARG     SECRET_KEY_BASE
+ARG     DATABASE_URL
+RUN     cd avalon && \
           bundle exec whenever -w && \
           bundle exec rake assets:precompile && \
           mv config/role_map_env.yml config/role_map_${RAILS_ENV}.yml && \
@@ -25,5 +30,5 @@ RUN     ["/bin/chown","-R","app:app","/home/app/avalon"]
 RUN     ["/bin/mkdir","/etc/service/delayed_job"]
 ADD     ./avalon.conf /etc/nginx/sites-available/avalon
 ADD     ./nginx_env.conf /etc/nginx/main.d/env.conf
-ADD     precompile_assets.sh /etc/my_init.d/30_precompile_assets.sh
+ADD     db_migrate.sh /etc/my_init.d/30_db_migrate.sh
 ADD     avalon_delayed_job.sh /etc/service/delayed_job/run

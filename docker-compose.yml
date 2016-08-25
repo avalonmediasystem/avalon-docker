@@ -48,17 +48,55 @@ services:
       context: ./avalon
       args:
         - AVALON_BRANCH
-        - AVALON_SECRET_KEY_BASE
+        - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
+        - SECRET_KEY_BASE
     depends_on:
-    - db
-    - fedora
-    - solr
-    - matterhorn
+      - db
+      - fedora
+      - solr
+      - matterhorn
     environment:
-      - AVALON_DB_PASSWORD
-      - AVALON_SECRET_KEY_BASE
+      - APP_NAME
+      - SECRET_KEY_BASE
+      - BASE_URL
+      - CONTROLLED_VOCABULARY
+      - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
+      - DROPBOX_PATH
+      - DROPBOX_URI
+      - EMAIL_COMMENTS
+      - EMAIL_NOTIFICATION
+      - EMAIL_SUPPORT
+      - FEDORA_NAMESPACE
+      - FEDORA_URL
+      - FFMPEG_PATH
+      - MASTER_FILE_PATH
+      - MASTER_FILE_STRATEGY
+      - MATTERHORN_URL
+      - MEDIAINFO_PATH
+      - RAILS_ENV
+      - SMTP_ADDRESS
+      - SMTP_AUTHENTICATION
+      - SMTP_DOMAIN
+      - SMTP_ENABLE_STARTTLS_AUTO
+      - SMTP_OPENSSL_VERIFY_MODE
+      - SMTP_PASSWORD
+      - SMTP_PORT
+      - SMTP_USER_NAME
+      - SOLR_URL
+      - STREAM_BASE
+      - STREAM_DEFAULT_QUALITY
+      - STREAM_HTTP_BASE
+      - STREAM_RTMP_BASE
+      - STREAM_SERVER
+      - STREAM_TOKEN_TTL
+      - SYSTEM_GROUPS
+      - Z3950_ATTRIBUTE
+      - Z3950_DATABASE
+      - Z3950_HOST
+      - Z3950_PORT
     volumes:
       - ./masterfiles:/masterfiles
+      - ./gems:/gems
     ports:
       - "8888:80"
   streaming:
