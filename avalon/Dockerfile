@@ -11,12 +11,14 @@ USER    app
 RUN     git clone --branch=${AVALON_BRANCH} --depth=1 https://github.com/avalonmediasystem/avalon.git
 ADD     Gemfile.local /home/app/avalon/
 ADD     config/* /home/app/avalon/config/
+ADD     production.rb /home/app/avalon/config/environments/
+ADD     rewrite_asset_host.rake /home/app/avalon/lib/tasks
 RUN     RAILS_ENV=production bash -c \
          "cd avalon && \
           bundle config build.nokogiri --use-system-libraries && \
           bundle install --path=vendor/gems --without development test && \
           cd .."
-RUN     RAILS_ENV=production BASE_URL=http://foo SECRET_KEY_BASE=bar DATABASE_URL=sqlite3:/baz.sqlite3 bash -c \
+RUN     RAILS_ENV=production ASSET_HOST=__ASSET_HOST__ BASE_URL=http://foo SECRET_KEY_BASE=bar DATABASE_URL=sqlite3:/baz.sqlite3 bash -c \
          "cd avalon && \
           bundle exec whenever -w && \
           bundle exec rake assets:precompile && \
@@ -28,5 +30,5 @@ RUN     ["/bin/chown","-R","app:app","/home/app/avalon"]
 RUN     ["/bin/mkdir","/etc/service/delayed_job"]
 ADD     ./avalon.conf /etc/nginx/sites-available/avalon
 ADD     ./nginx_env.conf /etc/nginx/main.d/env.conf
-ADD     db_migrate.sh /etc/my_init.d/30_db_migrate.sh
+ADD     rails_init.sh /etc/my_init.d/30_rails_init.sh
 ADD     avalon_delayed_job.sh /etc/service/delayed_job/run

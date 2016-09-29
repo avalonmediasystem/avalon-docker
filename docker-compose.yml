@@ -56,6 +56,7 @@ services:
     environment:
       - APP_NAME
       - SECRET_KEY_BASE
+      - ASSET_HOST
       - BASE_URL
       - CONTROLLED_VOCABULARY
       - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
