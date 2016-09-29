@@ -48,8 +48,6 @@ services:
       context: ./avalon
       args:
         - AVALON_BRANCH
-        - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
-        - SECRET_KEY_BASE
     depends_on:
       - db
       - fedora
