@@ -100,13 +100,9 @@ services:
       - "8888:80"
   streaming:
     build: 
-      context: ./streaming
-      args:
-        - WOWZA_ADMIN_PASSWORD
-        - WOWZA_ADMIN_USER
-        - WOWZA_LICENSE_KEY
-        - WOWZA_SILENT_INSTALL_KEY
+      context: ./nginx
     volumes:
-      - streaming:/streamfiles
+      - streaming:/data
     ports:
       - "1935:1935"
+      - "8880:80"
