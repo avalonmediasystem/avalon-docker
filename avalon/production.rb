@@ -5,6 +5,7 @@ Avalon::Application.configure do
   config.assets.compile = false
   config.assets.compress = true
   config.assets.digest = true
+  config.assets.precompile += %w( modernizr.js )
   config.cache_classes = true
   config.consider_all_requests_local = false
   config.eager_load = true
