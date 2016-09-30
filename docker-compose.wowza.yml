@@ -109,11 +109,15 @@ services:
     ports:
       - "8888:80"
   streaming:
+    image: avalonmediasystem/avalon-5.x:wowza
     build: 
-    image: avalonmediasystem/avalon-5.x:nginx
-      context: ./nginx
+      context: ./streaming
+      args:
+        - WOWZA_ADMIN_PASSWORD
+        - WOWZA_ADMIN_USER
+        - WOWZA_LICENSE_KEY
+        - WOWZA_SILENT_INSTALL_KEY
     volumes:
-      - streaming:/data
+      - streaming:/streamfiles
     ports:
       - "1935:1935"
-      - "8880:80"
