@@ -109,8 +109,8 @@ services:
     ports:
       - "8888:80"
   streaming:
-    build: 
     image: avalonmediasystem/avalon-5.x:nginx
+    build: 
       context: ./nginx
     volumes:
       - streaming:/data
