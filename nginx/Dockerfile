@@ -8,12 +8,13 @@ RUN         apt-get clean
 ADD         build-nginx.sh /usr/src/build-nginx.sh
 RUN         /usr/src/build-nginx.sh
 
+EXPOSE      1935
+EXPOSE      80
+
 RUN         useradd nginx
 RUN         mkdir /data
 RUN         mkdir -p /var/log/nginx && chown nginx /var/log/nginx
-ADD         nginx.conf /etc/nginx/nginx.conf
 ADD         stat.xsl  /etc/nginx/stat.xsl
 RUN         mkdir /etc/service/nginx
 RUN         ln -s /usr/local/nginx/sbin/nginx /etc/service/nginx/run
-EXPOSE      1935
-EXPOSE      80
+ADD         nginx.conf /etc/nginx/nginx.conf
