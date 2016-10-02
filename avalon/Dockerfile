@@ -2,14 +2,14 @@ FROM        phusion/passenger-ruby22
 MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
 RUN         apt-get update && apt-get upgrade -y
 RUN         apt-get install -y mediainfo ffmpeg x264 
-ARG         AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
-ARG         AVALON_BRANCH=master
 RUN         apt-get install -y cmake pkg-config lsof
 RUN         apt-get clean
 RUN         ln -s /usr/bin/lsof /usr/sbin/
 RUN         rm /etc/nginx/sites-enabled/default
 RUN         rm -f /etc/service/nginx/down
 RUN         ln -s /etc/nginx/sites-available/avalon /etc/nginx/sites-enabled/avalon
+ARG         AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
+ARG         AVALON_BRANCH=master
 WORKDIR     /home/app
 USER        app
 RUN         git clone --branch=${AVALON_BRANCH} --depth=1 ${AVALON_REPO}
