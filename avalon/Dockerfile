@@ -4,10 +4,11 @@ RUN         apt-get update && apt-get upgrade -y
 RUN         apt-get install -y mediainfo ffmpeg x264 
 RUN         apt-get install -y cmake pkg-config lsof
 RUN         apt-get clean
-RUN         ln -s /usr/bin/lsof /usr/sbin/
-RUN         rm /etc/nginx/sites-enabled/default
-RUN         rm -f /etc/service/nginx/down
-RUN         ln -s /etc/nginx/sites-available/avalon /etc/nginx/sites-enabled/avalon
+RUN         ln -s /usr/bin/lsof /usr/sbin/ && \
+            rm /etc/nginx/sites-enabled/default && \
+            rm -f /etc/service/nginx/down && \
+            ln -s /etc/nginx/sites-available/avalon /etc/nginx/sites-enabled/avalon && \
+            mkdir /etc/service/delayed_job
 ARG         AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
 ARG         AVALON_BRANCH=master
 WORKDIR     /home/app
@@ -31,7 +32,6 @@ RUN         RAILS_ENV=production ASSET_HOST=__ASSET_HOST__ BASE_URL=http://foo S
 ADD         rewrite_asset_host.rake /home/app/avalon/lib/tasks
 USER        root
 RUN         chown -R app:app /home/app/avalon
-RUN         mkdir /etc/service/delayed_job
 ADD         ./avalon.conf /etc/nginx/sites-available/avalon
 ADD         ./nginx_env.conf /etc/nginx/main.d/env.conf
 ADD         rails_init.sh /etc/my_init.d/30_rails_init.sh
