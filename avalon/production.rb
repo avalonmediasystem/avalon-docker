@@ -16,7 +16,8 @@ Avalon::Application.configure do
     mediaelement-skin-avalon/mejs-skin-avalon.css mediaelement-skin-avalon/mep-feature-responsive.js 
     mediaelement-title/mejs-title.css mediaelement_rails/mediaelement-and-player.js 
     mediaelement_rails/mediaelementplayer.css modernizr.js select_all.js sort_streams.js xmleditor/ace.js 
-    xmleditor/jquery.xmleditor.js xmleditor/mode-xml.js xmleditor/vkbeautify.js xmleditor/xsd2json.js )
+    xmleditor/jquery.xmleditor.js xmleditor/mode-xml.js xmleditor/vkbeautify.js xmleditor/xsd2json.js 
+    mediaelement_rails/flashmediaelement.swf )
   config.cache_classes = true
   config.consider_all_requests_local = false
   config.eager_load = true
