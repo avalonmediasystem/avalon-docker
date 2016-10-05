@@ -1,40 +1,6 @@
-# All values are required. Existing values are defaults. Others need
-# to be filled in or generated.
-AVALON_BRANCH=5.x-named-stream-auth
 AVALON_DB_PASSWORD=
 FEDORA_DB_PASSWORD=
-FEDORA_VERSION=3.8.1
-MATTERHORN_VER=1.4
-MATTERHORN_BRANCH=1.4.x
-POSTGRES_USER=postgres
-WOWZA_ADMIN_PASSWORD=
-WOWZA_ADMIN_USER=admin
-WOWZA_LICENSE_KEY=
-WOWZA_SILENT_INSTALL_KEY=
-
 SECRET_KEY_BASE=
-DATABASE_URL=postgresql://avalon@#{AVALON_DB_PASSWORD}@db/
-FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora
-SOLR_URL=http://solr:8080/solr/avalon
-MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
-APP_NAME=avalon
-FEDORA_NAMESPACE=avalon
-BASE_URL=http://localhost:8888/
-DROPBOX_PATH=/masterfiles/dropbox
-DROPBOX_URI=scp://localhost/masterfiles/dropbox/
-LTI_AUTH_KEY="key"
-LTI_AUTH_SECRET="secret"
-MEDIAINFO_PATH=/usr/bin/mediainfo
-STREAM_BASE=/streamfiles
-STREAM_SERVER=nginx
-STREAM_TOKEN_TTL=20
-STREAM_RTMP_BASE=rtmp://streaming/avalon
-STREAM_HTTP_BASE=http://streaming:8880/avalon
-STREAM_DEFAULT_QUALITY=low
-SYSTEM_GROUPS=administrator,group_manager,manager
-MASTER_FILE_STRATEGY=delete
-FFMPEG_PATH=/usr/bin/ffmpeg
-CONTROLLED_VOCABULARY=config/controlled_vocabulary.yml
 EMAIL_COMMENTS=avalon-comments@example.edu
 EMAIL_NOTIFICATION=avalon-notifications@example.edu
 EMAIL_SUPPORT=avalon-support@example.edu
@@ -44,3 +10,5 @@ Z3950_HOST=
 Z3950_PORT=
 Z3950_DATABASE=
 Z3950_ATTRIBUTE=
+LTI_AUTH_KEY=
+LTI_AUTH_SECRET=

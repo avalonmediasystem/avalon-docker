@@ -16,7 +16,7 @@ services:
       - AVALON_DB_PASSWORD
       - FEDORA_DB_PASSWORD
       - PGDATA=/data
-      - POSTGRES_USER
+      - POSTGRES_USER=postgres
     ports:
       - "5432:5432"
   fedora:
@@ -25,7 +25,7 @@ services:
       context: ./fedora
       args:
         - FEDORA_DB_PASSWORD
-        - FEDORA_VERSION
+        - FEDORA_VERSION=3.8.1
     depends_on:
       - db
     volumes:
@@ -45,44 +45,53 @@ services:
     build: 
       context: ./matterhorn
       args:
-        - MATTERHORN_VER
-        - MATTERHORN_BRANCH
+        - MATTERHORN_VER=1.4
+        - MATTERHORN_BRANCH=1.4.x
     volumes:
       - ./masterfiles:/masterfiles
       - streaming:/streamfiles
       - work:/work
     ports:
       - "8080:8080"
+  streaming:
+    image: avalonmediasystem/avalon-5.x:nginx
+    build: 
+      context: ./nginx
+    volumes:
+      - streaming:/data
+    ports:
+      - "1935:1935"
+      - "8880:80"
   avalon:
     image: avalonmediasystem/avalon-5.x:avalon
     build: 
       context: ./avalon
       args:
-        - AVALON_BRANCH
+        - AVALON_BRANCH=
     depends_on:
       - db
       - fedora
       - solr
     environment:
-      - APP_NAME
+      - APP_NAME=avalon
       - SECRET_KEY_BASE
       - ASSET_HOST
-      - BASE_URL
-      - CONTROLLED_VOCABULARY
+      - BASE_URL=http://localhost:8888/
+      - CONTROLLED_VOCABULARY=config/controlled_vocabulary.yml
       - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
-      - DROPBOX_PATH
-      - DROPBOX_URI
+      - DROPBOX_PATH=/masterfiles/dropbox
+      - DROPBOX_URI=./masterfiles/dropbox
       - EMAIL_COMMENTS
       - EMAIL_NOTIFICATION
       - EMAIL_SUPPORT
-      - FEDORA_NAMESPACE
-      - FEDORA_URL
-      - FFMPEG_PATH
+      - FEDORA_NAMESPACE=avalon
+      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora
+      - FFMPEG_PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
-      - MASTER_FILE_STRATEGY
-      - MATTERHORN_URL
-      - MEDIAINFO_PATH
-      - RAILS_ENV
+      - MASTER_FILE_STRATEGY=delete
+      - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
+      - MEDIAINFO_PATH=/usr/bin/mediainfo
+      - RAILS_ENV=production
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
       - SMTP_DOMAIN
@@ -91,14 +100,14 @@ services:
       - SMTP_PASSWORD
       - SMTP_PORT
       - SMTP_USER_NAME
-      - SOLR_URL
-      - STREAM_BASE
-      - STREAM_DEFAULT_QUALITY
-      - STREAM_HTTP_BASE
-      - STREAM_RTMP_BASE
-      - STREAM_SERVER
-      - STREAM_TOKEN_TTL
-      - SYSTEM_GROUPS
+      - SOLR_URL=http://solr:8080/solr/avalon
+      - STREAM_BASE=/streamfiles
+      - STREAM_DEFAULT_QUALITY=medium
+      - STREAM_HTTP_BASE=http://streaming:8880/avalon
+      - STREAM_RTMP_BASE=rtmp://streaming/avalon
+      - STREAM_SERVER=nginx
+      - STREAM_TOKEN_TTL=20
+      - SYSTEM_GROUPS=administrator,group_manager,manager
       - Z3950_ATTRIBUTE
       - Z3950_DATABASE
       - Z3950_HOST
