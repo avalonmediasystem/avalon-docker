@@ -103,8 +103,8 @@ services:
       - SOLR_URL=http://solr:8080/solr/avalon
       - STREAM_BASE=/streamfiles
       - STREAM_DEFAULT_QUALITY=medium
-      - STREAM_HTTP_BASE=http://streaming:8880/avalon
-      - STREAM_RTMP_BASE=rtmp://streaming/avalon
+      - STREAM_HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
+      - STREAM_RTMP_BASE=rtmp://${STREAMING_HOST}/avalon
       - STREAM_SERVER=nginx
       - STREAM_TOKEN_TTL=20
       - SYSTEM_GROUPS=administrator,group_manager,manager

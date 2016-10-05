@@ -1,16 +1,22 @@
+# Required Settings
 APP_NAME=avalon
 BASE_URL=http://localhost:8888/
+STREAMING_HOST=localhost
 AVALON_DB_PASSWORD=
 FEDORA_DB_PASSWORD=
 SECRET_KEY_BASE=
+
+# Recommended Settings
 EMAIL_COMMENTS=avalon-comments@example.edu
 EMAIL_NOTIFICATION=avalon-notifications@example.edu
 EMAIL_SUPPORT=avalon-support@example.edu
 SMTP_ADDRESS=smtp.example.edu
 SMTP_PORT=587
-Z3950_HOST=
-Z3950_PORT=
-Z3950_DATABASE=
-Z3950_ATTRIBUTE=
-LTI_AUTH_KEY=
-LTI_AUTH_SECRET=
+
+# Optional Settings
+# Z3950_HOST=
+# Z3950_PORT=
+# Z3950_DATABASE=
+# Z3950_ATTRIBUTE=
+# LTI_AUTH_KEY=
+# LTI_AUTH_SECRET=
