@@ -67,16 +67,16 @@ services:
     build: 
       context: ./avalon
       args:
-        - AVALON_BRANCH=
+        - AVALON_BRANCH
     depends_on:
       - db
       - fedora
       - solr
     environment:
-      - APP_NAME=avalon
+      - APP_NAME
       - SECRET_KEY_BASE
       - ASSET_HOST
-      - BASE_URL=http://localhost:8888/
+      - BASE_URL
       - CONTROLLED_VOCABULARY=config/controlled_vocabulary.yml
       - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
       - DROPBOX_PATH=/masterfiles/dropbox
