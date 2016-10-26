@@ -7,7 +7,7 @@ namespace :assets do
         @root         = environment.root
         @source       = content
         @logical_path = logical_path.to_s
-        @content_type = environment.content_type_of(logical_path)
+#        @content_type = environment.content_type_of(logical_path)
         @mtime        = Time.now
         @length       = Rack::Utils.bytesize(source)
         @digest       = environment.digest.update(source).hexdigest

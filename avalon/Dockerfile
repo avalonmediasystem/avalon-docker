@@ -7,8 +7,7 @@ RUN         apt-get clean
 RUN         ln -s /usr/bin/lsof /usr/sbin/ && \
             rm /etc/nginx/sites-enabled/default && \
             rm -f /etc/service/nginx/down && \
-            ln -s /etc/nginx/sites-available/avalon /etc/nginx/sites-enabled/avalon && \
-            mkdir /etc/service/delayed_job
+            ln -s /etc/nginx/sites-available/avalon /etc/nginx/sites-enabled/avalon
 ARG         AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
 ARG         AVALON_BRANCH=master
 WORKDIR     /home/app
@@ -16,23 +15,21 @@ USER        app
 RUN         git clone --branch=${AVALON_BRANCH} --depth=1 ${AVALON_REPO}
 ADD         Gemfile.local /home/app/avalon/
 ADD         config/* /home/app/avalon/config/
-RUN         RAILS_ENV=production bash -c \
-              "cd avalon && \
+ARG         RAILS_ENV=production
+RUN         cd avalon && \
               bundle config build.nokogiri --use-system-libraries && \
               bundle install --path=vendor/gems --without development test && \
-              cd .."
-ADD         production.rb /home/app/avalon/config/environments/
-RUN         RAILS_ENV=production ASSET_HOST=__ASSET_HOST__ BASE_URL=http://foo SECRET_KEY_BASE=bar DATABASE_URL=sqlite3:/baz.sqlite3 bash -c \
-              "cd avalon && \
+              cd ..
+ARG         BASE_URL
+ARG         DATABASE_URL
+ARG         SECRET_KEY_BASE
+RUN         cd avalon && \
               bundle exec whenever -w && \
               bundle exec rake assets:precompile && \
-              mv config/role_map_env.yml config/role_map_${RAILS_ENV}.yml && \
               cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml && \
-              cd .."
-ADD         rewrite_asset_host.rake /home/app/avalon/lib/tasks
+              cd ..
 USER        root
 RUN         chown -R app:app /home/app/avalon
 ADD         ./avalon.conf /etc/nginx/sites-available/avalon
 ADD         ./nginx_env.conf /etc/nginx/main.d/env.conf
 ADD         rails_init.sh /etc/my_init.d/30_rails_init.sh
-ADD         avalon_delayed_job.sh /etc/service/delayed_job/run
