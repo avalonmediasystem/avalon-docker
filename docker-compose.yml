@@ -70,6 +70,10 @@ services:
     ports:
       - "1935:1935"
       - "8880:80"
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
   avalon:
     image: avalonmediasystem/avalon-6.x:avalon
     build: 
