@@ -11,3 +11,4 @@ On a Mac
   * `eval $(docker-machine env)`
   * `docker-machine start default`
   * `docker-compose up`
+* The docker container will be accessible via `http://192.168.99.100:8888/`
