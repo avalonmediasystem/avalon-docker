@@ -86,6 +86,7 @@ services:
       - db
       - fedora
       - solr
+      - redis
     environment:
       - APP_NAME
       - SECRET_KEY_BASE
@@ -107,6 +108,7 @@ services:
       - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ENV=production
+      - REDIS_SERVER=redis:6379
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
       - SMTP_DOMAIN
