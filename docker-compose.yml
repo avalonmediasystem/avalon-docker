@@ -62,9 +62,9 @@ services:
     ports:
       - "8080:8080"
   streaming:
-    image: avalonmediasystem/avalon-5.x:nginx
+    image: avalonmediasystem/avalon-5.x:red5
     build: 
-      context: ./nginx
+      context: ./red5
     volumes:
       - streaming:/data
     ports:
@@ -123,7 +123,7 @@ services:
       - STREAM_DEFAULT_QUALITY=medium
       - STREAM_HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
       - STREAM_RTMP_BASE=rtmp://${STREAMING_HOST}/avalon
-      - STREAM_SERVER=nginx
+      - STREAM_SERVER=red5
       - STREAM_TOKEN_TTL=20
       - SYSTEM_GROUPS=administrator,group_manager,manager
       - Z3950_ATTRIBUTE
