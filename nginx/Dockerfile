@@ -2,7 +2,7 @@ FROM        phusion/baseimage:latest
 MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
 RUN         apt-get update && apt-get upgrade -y
 RUN         apt-get install -y mediainfo ffmpeg x264 
-RUN         apt-get install -y build-essential git libpcre3-dev zlib1g-dev libssl-dev
+RUN         apt-get install -y build-essential git libpcre3-dev zlib1g-dev libssl-dev libavcodec-dev
 RUN         apt-get clean
 
 ADD         build-nginx.sh /usr/src/build-nginx.sh
