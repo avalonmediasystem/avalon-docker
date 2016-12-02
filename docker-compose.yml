@@ -9,7 +9,7 @@ volumes:
     
 services:
   db:
-    image: avalonmediasystem/avalon-5.x:db
+    image: avalonmediasystem/avalon-6.x:db
     build: ./db
     volumes:
       - database:/data
@@ -49,7 +49,7 @@ services:
       - avalon
       - /opt/solr/avalon_conf
   matterhorn:
-    image: avalonmediasystem/avalon-5.x:matterhorn
+    image: avalonmediasystem/avalon-6.x:matterhorn
     build: 
       context: ./matterhorn
       args:
@@ -62,7 +62,7 @@ services:
     ports:
       - "8080:8080"
   streaming:
-    image: avalonmediasystem/avalon-5.x:red5
+    image: avalonmediasystem/avalon-6.x:red5
     build: 
       context: ./red5
     volumes:
