@@ -61,7 +61,7 @@ services:
       - work:/work
     ports:
       - "8080:8080"
-  streaming:
+  rtmp:
     image: avalonmediasystem/avalon-6.x:red5
     build: 
       context: ./red5
@@ -69,7 +69,14 @@ services:
       - streaming:/data
     ports:
       - "1935:1935"
-      - "8880:80"
+  hls:
+    image: avalonmediasystem/avalon-5.x:nginx
+    build:
+      context: ./nginx
+    volumes:
+      - streaming:/data
+    ports:
+       - "8880:80"
   redis:
     image: redis:alpine
     ports:
@@ -123,7 +130,7 @@ services:
       - STREAM_DEFAULT_QUALITY=medium
       - STREAM_HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
       - STREAM_RTMP_BASE=rtmp://${STREAMING_HOST}/avalon
-      - STREAM_SERVER=red5
+      - STREAM_SERVER=nginx
       - STREAM_TOKEN_TTL=20
       - SYSTEM_GROUPS=administrator,group_manager,manager
       - Z3950_ATTRIBUTE
@@ -134,4 +141,4 @@ services:
       - ./masterfiles:/masterfiles
       - ./gems:/gems
     ports:
-      - "8888:80"
+      - "80:80"
