@@ -7,7 +7,8 @@ RUN         apt-get clean
 RUN         ln -s /usr/bin/lsof /usr/sbin/ && \
             rm /etc/nginx/sites-enabled/default && \
             rm -f /etc/service/nginx/down && \
-            ln -s /etc/nginx/sites-available/avalon /etc/nginx/sites-enabled/avalon
+            ln -s /etc/nginx/sites-available/avalon /etc/nginx/sites-enabled/avalon && \
+            chown app:docker_env /etc/container_environment.sh
 ARG         AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
 ARG         AVALON_BRANCH=master
 WORKDIR     /home/app
@@ -24,7 +25,8 @@ ARG         BASE_URL
 ARG         DATABASE_URL
 ARG         SECRET_KEY_BASE
 RUN         cd avalon && \
-              bundle exec whenever -w && \
+              mkdir -p tmp/pids && \
+              bundle exec whenever -w -f config/docker_schedule.rb && \
               bundle exec rake assets:precompile && \
               cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml && \
               cd ..
