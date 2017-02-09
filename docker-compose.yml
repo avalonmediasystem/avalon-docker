@@ -8,7 +8,7 @@ volumes:
     
 services:
   db:
-    image: avalonmediasystem/avalon-5.x:db
+    image: avalonmediasystem/db
     build: ./db
     volumes:
       - database:/data
@@ -20,7 +20,7 @@ services:
     ports:
       - "5432:5432"
   fedora:
-    image: avalonmediasystem/avalon-5.x:fedora
+    image: avalonmediasystem/fedora:3.x
     build: 
       context: ./fedora
       args:
@@ -33,7 +33,7 @@ services:
     ports:
       - "8984:8080"
   solr:
-    image: avalonmediasystem/avalon-5.x:solr
+    image: avalonmediasystem/solr:4.x
     build: 
       context: ./solr
       args:
@@ -41,7 +41,7 @@ services:
     ports:
       - "8983:8080"
   matterhorn:
-    image: avalonmediasystem/avalon-5.x:matterhorn
+    image: avalonmediasystem/matterhorn
     build: 
       context: ./matterhorn
       args:
@@ -54,7 +54,7 @@ services:
     ports:
       - "8080:8080"
   streaming:
-    image: avalonmediasystem/avalon-5.x:nginx
+    image: avalonmediasystem/nginx
     build: 
       context: ./nginx
     volumes:
@@ -63,7 +63,7 @@ services:
       - "1935:1935"
       - "8880:80"
   avalon:
-    image: avalonmediasystem/avalon-5.x:avalon
+    image: avalonmediasystem/avalon:5.x
     build: 
       context: ./avalon
       args:
