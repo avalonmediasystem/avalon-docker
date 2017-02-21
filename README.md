@@ -1,10 +1,11 @@
 # avalon-docker
 Dockerfiles for Avalon Media System - http://github.com/avalonmediasystem/avalon
 
+Clone this Repo and checkout the desired branch
+Copy dotenv.example to .env and fill in the passwords and Rails secrect key base.
 
 On a Mac
 * Install Docker Toolbox for OS X
-* Clone this Repo and checkout the desired branch (6.x probably)
 * Run
   * `docker-machine stop default`
   * `docker-machine start default`
