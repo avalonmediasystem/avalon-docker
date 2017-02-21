@@ -10,7 +10,7 @@ volumes:
 services:
   db:
     image: avalonmediasystem/db
-   build: ./db
+    build: ./db
     volumes:
       - database:/data
     environment:
