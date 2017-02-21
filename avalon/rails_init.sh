@@ -1,5 +1,5 @@
 #!/bin/bash
-chmod 0777 /masterfiles
+chmod 0777 -R /masterfiles
 chown -R app /masterfiles
 cd /home/app/avalon
 su app
