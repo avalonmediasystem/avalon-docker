@@ -9,7 +9,7 @@ volumes:
     
 services:
   db:
-    image: avalonmediasystem/db
+    image: avalonmediasystem/db:fedora4
     build: ./db
     volumes:
       - database:/data
@@ -21,12 +21,12 @@ services:
     ports:
       - "5432:5432"
   fedora:
-    image: avalonmediasystem/fedora:4.x
+    image: avalonmediasystem/fedora:4.7.x
     build: 
       context: ./fedora
       args:
         - FEDORA_DB_PASSWORD
-        - FEDORA_VERSION=4.5.1
+        - FEDORA_VERSION=4.7.1
     depends_on:
       - db
     volumes:

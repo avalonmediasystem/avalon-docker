@@ -1,8 +1,7 @@
 FROM        phusion/passenger-ruby22
 MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
 RUN         apt-get update && apt-get upgrade -y
-RUN         apt-get install -y mediainfo ffmpeg x264 
-RUN         apt-get install -y cmake pkg-config lsof
+RUN         apt-get install -y mediainfo ffmpeg x264 cmake pkg-config lsof sendmail
 RUN         apt-get clean
 RUN         ln -s /usr/bin/lsof /usr/sbin/ && \
             rm /etc/nginx/sites-enabled/default && \
