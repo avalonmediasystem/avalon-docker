@@ -5,10 +5,11 @@ volumes:
   database:
   fedora:
   work:
+  solr:
     
 services:
   db:
-    image: avalonmediasystem/db
+    image: avalonmediasystem/db:fedora4
     build: ./db
     volumes:
       - database:/data
@@ -20,12 +21,12 @@ services:
     ports:
       - "5432:5432"
   fedora:
-    image: avalonmediasystem/fedora:3.x
+    image: avalonmediasystem/fedora:4.7.x
     build: 
       context: ./fedora
       args:
         - FEDORA_DB_PASSWORD
-        - FEDORA_VERSION=3.8.1
+        - FEDORA_VERSION=4.7.1
     depends_on:
       - db
     volumes:
@@ -33,13 +34,20 @@ services:
     ports:
       - "8984:8080"
   solr:
-    image: avalonmediasystem/solr:4.x
+    image: avalonmediasystem/solr:latest
     build: 
       context: ./solr
       args:
         - AVALON_BRANCH
     ports:
-      - "8983:8080"
+      - "8983:8983"
+    volumes:
+      - solr:/opt/solr/server/solr/mycores
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - avalon
+      - /opt/solr/avalon_conf
   matterhorn:
     image: avalonmediasystem/matterhorn
     build: 
@@ -53,25 +61,39 @@ services:
       - work:/work
     ports:
       - "8080:8080"
-  streaming:
-    image: avalonmediasystem/nginx
+  rtmp:
+    image: avalonmediasystem/red5
     build: 
-      context: ./nginx
+      context: ./red5
     volumes:
       - streaming:/data
     ports:
       - "1935:1935"
-      - "8880:80"
+  hls:
+    image: avalonmediasystem/nginx
+    build:
+      context: ./nginx
+    volumes:
+      - streaming:/data
+    ports:
+       - "8880:80"
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
   avalon:
-    image: avalonmediasystem/avalon:5.x
+    image: avalonmediasystem/avalon:6.0
     build: 
       context: ./avalon
       args:
         - AVALON_BRANCH
+        - SECRET_KEY_BASE
+        - BASE_URL
     depends_on:
       - db
       - fedora
       - solr
+      - redis
     environment:
       - APP_NAME
       - SECRET_KEY_BASE
@@ -84,14 +106,17 @@ services:
       - EMAIL_COMMENTS
       - EMAIL_NOTIFICATION
       - EMAIL_SUPPORT
+      - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
-      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora
+      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora/rest
       - FFMPEG_PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
       - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
+      - MEDIA_PATH=/masterfiles
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ENV=production
+      - REDIS_SERVER=redis:6379
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
       - SMTP_DOMAIN
@@ -100,7 +125,7 @@ services:
       - SMTP_PASSWORD
       - SMTP_PORT
       - SMTP_USER_NAME
-      - SOLR_URL=http://solr:8080/solr/avalon
+      - SOLR_URL=http://solr:8983/solr/avalon
       - STREAM_BASE=/streamfiles
       - STREAM_DEFAULT_QUALITY=medium
       - STREAM_HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
@@ -116,4 +141,4 @@ services:
       - ./masterfiles:/masterfiles
       - ./gems:/gems
     ports:
-      - "8888:80"
+      - "80:80"

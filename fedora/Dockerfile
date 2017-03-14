@@ -1,12 +1,9 @@
 FROM        jetty:alpine
 MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
-ARG         FEDORA_VERSION=3.8.1
+ARG         FEDORA_VERSION=4.7.1
 ARG         FEDORA_DB_PASSWORD
-ADD         fedora_home/ ${JETTY_BASE}/fedora/
-ADD         https://github.com/projecthydra/hydra-jetty/raw/7.x-stable/webapps/fedora.war ${JETTY_BASE}/fedora/
-ADD         etc/ ${JETTY_BASE}/etc/
+ADD         https://github.com/fcrepo4/fcrepo4/releases/download/fcrepo-${FEDORA_VERSION}/fcrepo-webapp-${FEDORA_VERSION}.war ${JETTY_BASE}/fedora/fedora.war
 ADD         fedora.xml ${JETTY_BASE}/webapps/fedora.xml
-RUN         /bin/chown -R jetty:jetty ${JETTY_BASE}/fedora/ ${JETTY_BASE}/etc/
-RUN         /bin/echo etc/jetty-fedorarealm.xml > ${JETTY_BASE}/start.ini
+RUN         /bin/chown -R jetty:jetty ${JETTY_BASE}/fedora/ 
 ADD         fedora-entrypoint.sh /
 ENTRYPOINT  "/fedora-entrypoint.sh"
