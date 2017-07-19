@@ -17,8 +17,8 @@ RUN         apt-get update && apt-get install -y \
          && apt-get clean
 ARG         MATTERHORN_VER=1.4
 ARG         MATTERHORN_BRANCH=1.4.x
-ADD         https://codeload.github.com/avalonmediasystem/avalon-felix/tar.gz/${MATTERHORN_BRANCH} /tmp
-RUN         mv /tmp/avalon-felix-${MATTERHORN_BRANCH} /usr/local/matterhorn 
+RUN         curl https://codeload.github.com/avalonmediasystem/avalon-felix/tar.gz/${MATTERHORN_BRANCH} | tar xz \ 
+         && mv avalon-felix-1.4.x /usr/local/matterhorn
 WORKDIR     /usr/local/matterhorn
 ADD         config.properties /usr/local/matterhorn/etc/config.properties
 ADD         avalon.properties /usr/local/matterhorn/etc/encoding/avalon.properties
