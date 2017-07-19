@@ -1,8 +1,15 @@
 FROM        phusion/passenger-ruby22
-MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
-RUN         apt-get update && apt-get upgrade -y
-RUN         apt-get install -y mediainfo ffmpeg x264 cmake pkg-config lsof sendmail
-RUN         apt-get clean
+LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
+RUN         apt-get update && apt-get install -y \
+            mediainfo \
+            ffmpeg \
+            x264 \
+            cmake \
+            pkg-config \
+            lsof \
+            sendmail \
+         && rm -rf /var/lib/apt/lists/* \
+         && apt-get clean
 RUN         ln -s /usr/bin/lsof /usr/sbin/ && \
             rm /etc/nginx/sites-enabled/default && \
             rm -f /etc/service/nginx/down && \
@@ -18,7 +25,7 @@ ADD         config/* /home/app/avalon/config/
 ARG         RAILS_ENV=production
 RUN         cd avalon && \
               bundle config build.nokogiri --use-system-libraries && \
-              bundle install --path=vendor/gems --without development test && \
+              bundle install --path=vendor/gems --without development test profiling mysql && \
               cd ..
 ARG         BASE_URL
 ARG         DATABASE_URL
