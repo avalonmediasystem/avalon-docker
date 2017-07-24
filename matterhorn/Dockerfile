@@ -1,22 +1,30 @@
 FROM        phusion/baseimage:latest
-MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
-RUN         apt-get update && apt-get upgrade -y
-RUN         apt-get install -y mediainfo ffmpeg x264 
-RUN         apt-get install -y openjdk-8-jdk-headless jam libjpeg-turbo-progs libpng3 \
-              libtiff5 scons libsdl2-2.0-0 zlib1g tesseract-ocr
-RUN         apt-get clean
+LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
+RUN         apt-get update && apt-get install -y \ 
+            mediainfo \ 
+            ffmpeg \
+            x264 \
+            openjdk-8-jre-headless \
+            jam \
+            libjpeg-turbo-progs \
+            libpng3 \
+            libsdl2-2.0-0 \
+            libtiff5 \ 
+            scons \
+            tesseract-ocr \
+            zlib1g \
+         && rm -rf /var/lib/apt/lists/* \
+         && apt-get clean
 ARG         MATTERHORN_VER=1.4
 ARG         MATTERHORN_BRANCH=1.4.x
-RUN         groupadd -g 500 matterhorn && \
-            useradd -u 500 -g 500 -M -r matterhorn && \
-            mkdir -p /usr/local/matterhorn
+RUN         curl https://codeload.github.com/avalonmediasystem/avalon-felix/tar.gz/${MATTERHORN_BRANCH} | tar xz \ 
+         && mv avalon-felix-1.4.x /usr/local/matterhorn
 WORKDIR     /usr/local/matterhorn
-ADD         https://codeload.github.com/avalonmediasystem/avalon-felix/tar.gz/${MATTERHORN_BRANCH} /tmp/matterhorn-${MATTERHORN_VER}.tar.gz
-RUN         tar xzf /tmp/matterhorn-${MATTERHORN_VER}.tar.gz --strip-components 1
 ADD         config.properties /usr/local/matterhorn/etc/config.properties
 ADD         avalon.properties /usr/local/matterhorn/etc/encoding/avalon.properties
-RUN         chown -R matterhorn:matterhorn /usr/local/matterhorn
+RUN         groupadd -g 500 matterhorn && \
+            useradd -u 500 -g 500 -M -r matterhorn && \
+            chown -R matterhorn:matterhorn /usr/local/matterhorn
 EXPOSE      8080
-RUN         mkdir /etc/service/matterhorn
 ADD         link_work_dir.sh /etc/my_init.d/30_link_work_dir.sh
 ADD         matterhorn.sh /etc/service/matterhorn/run
