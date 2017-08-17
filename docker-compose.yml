@@ -6,7 +6,7 @@ volumes:
   fedora:
   work:
   solr:
-    
+
 services:
   db:
     image: avalonmediasystem/db:fedora4
@@ -22,7 +22,7 @@ services:
       - "5432:5432"
   fedora:
     image: avalonmediasystem/fedora:4.7.3
-    build: 
+    build:
       context: ./fedora
       args:
         - FEDORA_DB_PASSWORD
@@ -35,7 +35,7 @@ services:
       - "8984:8080"
   solr:
     image: avalonmediasystem/solr:latest
-    build: 
+    build:
       context: ./solr
       args:
         - AVALON_BRANCH
@@ -50,7 +50,7 @@ services:
       - /opt/solr/avalon_conf
   matterhorn:
     image: avalonmediasystem/matterhorn
-    build: 
+    build:
       context: ./matterhorn
       args:
         - MATTERHORN_VER=1.4
@@ -61,29 +61,22 @@ services:
       - work:/work
     ports:
       - "8080:8080"
-  rtmp:
-    image: avalonmediasystem/red5
-    build: 
-      context: ./red5
-    volumes:
-      - streaming:/data
-    ports:
-      - "1935:1935"
-  hls:
-    image: avalonmediasystem/nginx
+  streaming:
+    image: avalonmediasystem/wowza:4.7.1
     build:
-      context: ./nginx
+      context: ./wowza
     volumes:
       - streaming:/data
     ports:
-       - "8880:80"
+       - "1935:1935"
+       - "8088:8088"
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
   avalon:
     image: avalonmediasystem/avalon:6.1
-    build: 
+    build:
       context: ./avalon
       args:
         - AVALON_BRANCH
@@ -128,7 +121,7 @@ services:
       - SOLR_URL=http://solr:8983/solr/avalon
       - STREAM_BASE=/streamfiles
       - STREAM_DEFAULT_QUALITY=medium
-      - STREAM_HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
+      - STREAM_HTTP_BASE=http://${STREAMING_HOST}:1935/avalon/_definst_
       - STREAM_RTMP_BASE=rtmp://${STREAMING_HOST}/avalon
       - STREAM_SERVER=nginx
       - STREAM_TOKEN_TTL=20
