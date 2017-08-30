@@ -21,7 +21,7 @@ WORKDIR     /home/app
 USER        app
 RUN         git clone --branch=${AVALON_BRANCH} --depth=1 ${AVALON_REPO}
 ADD         Gemfile.local /home/app/avalon/
-ADD         config/* /home/app/avalon/config/
+ADD         config /home/app/avalon/config/
 ARG         RAILS_ENV=production
 RUN         cd avalon && \
               bundle config build.nokogiri --use-system-libraries && \
