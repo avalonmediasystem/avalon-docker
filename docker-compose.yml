@@ -82,7 +82,7 @@ services:
     ports:
       - "6379:6379"
   avalon:
-    image: avalonmediasystem/avalon:6.1
+    image: avalonmediasystem/avalon:6.2
     build: 
       context: ./avalon
       args:
