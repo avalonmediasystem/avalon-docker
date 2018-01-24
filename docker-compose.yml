@@ -128,5 +128,7 @@ services:
     volumes:
       - ./masterfiles:/masterfiles
       - ./gems:/gems
+      - ./avalon/certs:/etc/nginx/certs
     ports:
       - "80:80"
+      - "443:443"
