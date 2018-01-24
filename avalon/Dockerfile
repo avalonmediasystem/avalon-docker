@@ -1,4 +1,4 @@
-FROM        phusion/passenger-ruby22
+FROM        phusion/passenger-ruby24
 LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
 RUN         apt-get update && apt-get install -y \
             mediainfo \
@@ -25,7 +25,7 @@ ADD         config /home/app/avalon/config/
 ARG         RAILS_ENV=production
 RUN         cd avalon && \
               bundle config build.nokogiri --use-system-libraries && \
-              bundle install --path=vendor/gems --without development test profiling mysql && \
+              bundle install --path=vendor/gems --with postgres --without development test profiling mysql && \
               cd ..
 ARG         BASE_URL
 ARG         DATABASE_URL
