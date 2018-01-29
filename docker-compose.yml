@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 volumes:
   streaming:
@@ -6,6 +6,10 @@ volumes:
   fedora:
   work:
   solr:
+
+networks:
+  external:
+  internal:
     
 services:
   db:
@@ -18,8 +22,8 @@ services:
       - FEDORA_DB_PASSWORD
       - PGDATA=/data
       - POSTGRES_USER=postgres
-    ports:
-      - "5432:5432"
+    networks:
+      internal:
   fedora:
     image: avalonmediasystem/fedora:4.7.3
     build: 
@@ -31,16 +35,14 @@ services:
       - db
     volumes:
       - fedora:/data
-    ports:
-      - "8984:8080"
+    networks:
+      internal:
   solr:
     image: avalonmediasystem/solr:latest
     build: 
       context: ./solr
       args:
         - AVALON_BRANCH
-    ports:
-      - "8983:8983"
     volumes:
       - solr:/opt/solr/server/solr/mycores
     entrypoint:
@@ -48,6 +50,8 @@ services:
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
+    networks:
+      internal:
   matterhorn:
     image: avalonmediasystem/matterhorn
     build: 
@@ -59,8 +63,8 @@ services:
       - ./masterfiles:/masterfiles
       - streaming:/streamfiles
       - work:/work
-    ports:
-      - "8080:8080"
+    networks:
+      internal:
   hls:
     image: avalonmediasystem/nginx
     build:
@@ -69,18 +73,20 @@ services:
       - streaming:/data
     ports:
        - "8880:80"
+    networks:
+      external:
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
+    networks:
+      internal:
   avalon:
-    image: avalonmediasystem/avalon:6.3
+    image: avalonmediasystem/avalon:6.3-ssl
     build: 
       context: ./avalon
       args:
         - AVALON_BRANCH
-        - SECRET_KEY_BASE
-        - BASE_URL
+        - SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83de96289b30550a266ac04488d7086322efbe573738e7b3ae005b2e3d9afd718aa337fa5e329cf
+        - SETTINGS__DOMAIN=https://localhost/
     depends_on:
       - db
       - fedora
@@ -88,12 +94,11 @@ services:
       - redis
     environment:
       - APP_NAME
-      - SECRET_KEY_BASE
       - ASSET_HOST
-      - SETTINGS__DOMAIN
       - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
       - SETTINGS__DROPBOX__PATH=/masterfiles/dropbox
       - SETTINGS__DROPBOX__UPLOAD_URI=./masterfiles/dropbox
+      - SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83de96289b30550a266ac04488d7086322efbe573738e7b3ae005b2e3d9afd718aa337fa5e329cf
       - EMAIL_COMMENTS
       - EMAIL_NOTIFICATION
       - EMAIL_SUPPORT
@@ -126,9 +131,20 @@ services:
       - Z3950_HOST
       - Z3950_PORT
     volumes:
-      - ./masterfiles:/masterfiles
-      - ./gems:/gems
+      - masterfiles:/masterfiles
+      - gems:/gems
       - ./avalon/certs:/etc/nginx/certs
     ports:
       - "80:80"
       - "443:443"
+    networks:
+      external:
+      internal:
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      external:
