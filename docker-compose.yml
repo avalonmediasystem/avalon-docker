@@ -1,6 +1,7 @@
 version: '3'
 
 volumes:
+  gems:
   streaming:
   database:
   fedora:
@@ -25,12 +26,14 @@ services:
     networks:
       internal:
   fedora:
-    image: avalonmediasystem/fedora:4.7.3
+    image: avalonmediasystem/fedora:4.7.4
     build: 
       context: ./fedora
       args:
         - FEDORA_DB_PASSWORD
-        - FEDORA_VERSION=4.7.3
+        - FEDORA_VERSION=4.7.4
+    environment:
+      - JAVA_OPTIONS=${JAVA_OPTIONS} -Dfcrepo.postgresql.password=${FEDORA_DB_PASSWORD} -Dfcrepo.postgresql.username=fedora -Dfcrepo.postgresql.host=db -Dfcrepo.modeshape.configuration=classpath:/config/jdbc-postgresql/repository.json
     depends_on:
       - db
     volumes:
@@ -80,11 +83,11 @@ services:
     networks:
       internal:
   avalon:
-    image: avalonmediasystem/avalon:6.3-ssl
+    image: avalonmediasystem/avalon:7.0
     build: 
       context: ./avalon
       args:
-        - AVALON_BRANCH
+        - AVALON_BRANCH=pg
         - SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83de96289b30550a266ac04488d7086322efbe573738e7b3ae005b2e3d9afd718aa337fa5e329cf
         - SETTINGS__DOMAIN=https://localhost/
     depends_on:
@@ -131,7 +134,7 @@ services:
       - Z3950_HOST
       - Z3950_PORT
     volumes:
-      - masterfiles:/masterfiles
+      - ./masterfiles:/masterfiles
       - gems:/gems
       - ./avalon/certs:/etc/nginx/certs
     ports:
