@@ -8,6 +8,8 @@ bundle exec rake assets:precompile
 
 rm -f tmp/pids/server.pid
 bundle exec rake db:migrate
+bundle exec rails hyrax:default_collection_types:create
+bundle exec rails hyrax:default_admin_set:create
 bundle exec rails server -b 0.0.0.0 -p 80 
 tail -f /dev/null
 
