@@ -43,9 +43,5 @@ RUN         ln -s /usr/bin/lsof /usr/sbin/ \
 #USER        app
 WORKDIR     /home/app/avalon
 
-ARG         AVALON_BRANCH=master
-ARG         RAILS_ENV=development
-ARG         BASE_URL
-ARG         DATABASE_URL
-ARG         SECRET_KEY_BASE
+ENV         RAILS_ENV=development
 ADD         rails_init-dev.sh /

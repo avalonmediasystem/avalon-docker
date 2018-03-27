@@ -26,12 +26,12 @@ services:
     networks:
       internal:
   fedora:
-    image: avalonmediasystem/fedora:4.7.4
+    image: avalonmediasystem/fedora:4.7.5
     build: 
       context: ./fedora
       args:
         - FEDORA_DB_PASSWORD
-        - FEDORA_VERSION=4.7.4
+        - FEDORA_VERSION=4.7.5
     environment:
       - JAVA_OPTIONS=${JAVA_OPTIONS} -Dfcrepo.postgresql.password=${FEDORA_DB_PASSWORD} -Dfcrepo.postgresql.username=fedora -Dfcrepo.postgresql.host=db -Dfcrepo.modeshape.configuration=classpath:/config/jdbc-postgresql/repository.json
     depends_on:
@@ -41,7 +41,7 @@ services:
     networks:
       internal:
   solr:
-    image: avalonmediasystem/solr:latest
+    image: avalonmediasystem/solr:avalon-7.0
     build: 
       context: ./solr
       args:
@@ -133,6 +133,8 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
+      - USER_ID=1000002
+      - GROUP_ID=1000002
     volumes:
       - ./masterfiles:/masterfiles
       - gems:/gems

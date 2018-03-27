@@ -1,4 +1,8 @@
 #!/bin/bash
+# Workaround for git clone problem when a non-existing uid:gid is used 
+export GIT_COMMITTER_NAME=avalon
+export GIT_COMMITTER_EMAIL=avalon@example.edu
+
 cd /home/app/avalon
 export HOME=/home/app/avalon
 bundle config build.nokogiri --use-system-libraries && \
@@ -10,7 +14,9 @@ rm -f tmp/pids/server.pid
 bundle exec rake db:migrate
 bundle exec rails hyrax:default_collection_types:create
 bundle exec rails hyrax:default_admin_set:create
-bundle exec rails server -b 0.0.0.0 -p 80 
+bundle exec rails server -b 0.0.0.0 -p 3000 
+
+# Be able to restart rails server without killing the container
 tail -f /dev/null
 
 # batch ingest cronjob wouldn't autorun without this
