@@ -107,7 +107,8 @@ services:
       - SETTINGS__MATTERHORN__MEDIA_PATH=/masterfiles
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ENV=production
-      - REDIS_SERVER=redis:6379
+      - SETTINGS__REDIS__HOST=redis
+      - SETTINGS__REDIS__PORT=6379
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
       - SMTP_DOMAIN
