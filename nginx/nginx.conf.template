@@ -13,14 +13,14 @@ rtmp {
 
     application avalon {
       play /data;
-      on_play http://avalon/authorize.txt;
+      on_play $AVALON_DOMAIN/authorize.txt;
     }
   }
 }
   
 http {
   server {
-    listen 80;
+    listen $AVALON_STREAMING_PORT;
 
     # This URL provides RTMP statistics in XML
     location /stat {
@@ -55,11 +55,6 @@ http {
 #      autoindex on;
 #    }
     
-    location /thumb/ {
-      alias /data/;
-      vod thumb;
-    }
-    
     location ~ ^/avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
       alias /data/$stream;
       vod hls;
@@ -81,7 +76,7 @@ http {
 
     location = /auth {
       resolver 127.0.0.1;
-      proxy_pass http://avalon/authorize.txt?token=$token&name=$stream;
+      proxy_pass $AVALON_DOMAIN/authorize.txt?token=$token&name=$stream;
       proxy_pass_request_body off;
       proxy_set_header Content-Length "";
       proxy_set_header X-Original-URI $request_uri;
