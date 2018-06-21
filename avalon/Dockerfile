@@ -30,7 +30,7 @@ RUN         cd avalon && \
               cd ..
 ARG         BASE_URL
 ARG         DATABASE_URL
-ARG         SECRET_KEY_BASE
+ARG         SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83de96289b30550a266ac04488d7086322efbe573738e7b3ae005b2e3d9afd718aa337fa5e329cf 
 RUN         cd avalon && \
               mkdir -p tmp/pids && \
               bundle exec whenever -w -f config/docker_schedule.rb && \
