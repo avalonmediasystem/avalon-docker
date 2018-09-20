@@ -27,10 +27,12 @@ services:
       args:
         - FEDORA_DB_PASSWORD
         - FEDORA_VERSION=4.7.5
+    environment:
+      - JAVA_OPTIONS=${JAVA_OPTIONS} -Dfcrepo.postgresql.password=${FEDORA_DB_PASSWORD} -Dfcrepo.postgresql.username=fedora -Dfcrepo.postgresql.host=db -Dfcrepo.modeshape.configuration=classpath:/config/jdbc-postgresql/repository.json -Dfcrepo.home=/var/lib/jetty/data
     depends_on:
       - db
     volumes:
-      - fedora:/data
+      - fedora:/var/lib/jetty/data
     ports:
       - "8984:8080"
   solr:
