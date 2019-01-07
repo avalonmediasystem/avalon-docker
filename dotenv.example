@@ -1,7 +1,7 @@
 # Required Settings
 APP_NAME=avalon
 AVALON_BRANCH=master
-BASE_URL=http://localhost:8888/
+SETTINGS__DOMAIN=http://localhost:8888/
 STREAMING_HOST=localhost
 AVALON_DB_PASSWORD=
 FEDORA_DB_PASSWORD=
