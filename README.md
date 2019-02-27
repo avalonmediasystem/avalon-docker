@@ -29,3 +29,10 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
 * `docker-compose build --no-cache <service_name>` to build the image(s) from scratch
 * `docker ps` to see all running containers
 * `docker exec -it avalondocker_avalon_1 /bin/bash` to log into Avalon docker container
+
+## Advanced Usage
+
+### Running on a server
+Set these Avalon env vars:
+* `SETTINGS__DOMAIN=http://<ip address or hostname>/`
+* `STREAMING_HOST=<ip address or hostname>` so Avalon crafts the right streaming URLs
