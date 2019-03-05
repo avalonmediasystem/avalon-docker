@@ -6,62 +6,38 @@ events {
   worker_connections 1024;
 }
 
-rtmp {
-  server {
-    listen 1935;
-    chunk_size 4000;
 
-    application avalon {
-      play /data;
-      on_play $AVALON_DOMAIN/authorize.txt;
-    }
-  }
-}
-  
 http {
   server {
     listen $AVALON_STREAMING_PORT;
+    
+    error_log stderr debug;
 
-    # This URL provides RTMP statistics in XML
-    location /stat {
-      rtmp_stat all;
-
-      # Use this stylesheet to view XML as web page
-      # in browser
-      rtmp_stat_stylesheet /stat.xsl;
-    }
-
-    location /stat.xsl {
-      # XML stylesheet to view RTMP stats.
-      # Copy stat.xsl wherever you want
-      # and put the full directory path here
-      root /etc/nginx/;
-    }
-
-    vod_mode local;
+    vod_mode remote;
+    vod_upstream_location /s3;
     vod_last_modified 'Sun, 19 Nov 2000 08:52:00 GMT';
     vod_last_modified_types *;
     vod_metadata_cache metadata_cache 512m;
     vod_response_cache response_cache 128m;
-    gzip on;
-    gzip_types application/vnd.apple.mpegurl;
+
     open_file_cache          max=1000 inactive=5m;
     open_file_cache_valid    2m;
     open_file_cache_min_uses 1;
     open_file_cache_errors   on;
     
-#    location /raw/ {
-#      alias /data/;
-#      autoindex on;
-#    }
-    
-    location ~ ^/avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
-      alias /data/$stream;
+    location /s3/avalon/ {
+      internal;
+      proxy_pass http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/;
+    }
+
+    location ~ /avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
       vod hls;
+      gzip on;
+      gzip_types application/x-mpegURL;
 
       set $token "$arg_token";
       add_header X-Stream-Auth-Token "$token";
-      
+
       sub_filter_types application/vnd.apple.mpegurl;
       sub_filter_once off;
       sub_filter '.ts' ".ts?token=$token";
@@ -70,7 +46,7 @@ http {
       add_header Access-Control-Allow-Headers '*';
       add_header Access-Control-Expose-Headers 'Server,range,Content-Length,Content-Range';
       add_header Access-Control-Allow-Methods 'GET, HEAD, OPTIONS';
-      add_header Access-Control-Allow-Origin '*';
+      add_header Access-Control-Allow-Origin "*";
       expires 100d;
     }
 
@@ -80,6 +56,10 @@ http {
       proxy_pass_request_body off;
       proxy_set_header Content-Length "";
       proxy_set_header X-Original-URI $request_uri;
+    }
+
+    location /status {
+      vod_status;
     }
 
     location /crossdomain.xml {

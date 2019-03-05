@@ -59,6 +59,8 @@ services:
     image: avalonmediasystem/nginx
     build:
       context: ./nginx
+    environment:
+      - AVALON_STREAMING_BUCKET=ngix-vod-streaming
     volumes:
       - streaming:/data
     ports:
@@ -114,6 +116,7 @@ services:
       - SETTINGS__STREAMING__HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
       - SETTINGS__STREAMING__SERVER=nginx
       - SYSTEM_GROUPS=administrator,group_manager,manager
+      - SECRET_KEY_BASE=112f7d33c8864e0ef22910b45014a1d7925693ef549850974631021864e2e67b16f44aa54a98008d62f6874360284d00bb29dc08c166197d043406b42190188a
       - Z3950_ATTRIBUTE
       - Z3950_DATABASE
       - Z3950_HOST

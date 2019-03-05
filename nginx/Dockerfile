@@ -1,12 +1,11 @@
 FROM        phusion/baseimage:latest
 MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
-RUN         apt-get update && apt-get upgrade -y
-RUN         apt-get install -y mediainfo ffmpeg x264 
-RUN         apt-get install -y build-essential git libpcre3-dev zlib1g-dev libssl-dev dnsmasq
-# gettext-base provides 'envsubst', used by nginx.sh
-RUN         apt-get install -y gettext-base
-
-RUN         apt-get clean
+RUN         apt-get update && apt-get upgrade -y \
+         && apt-get install -y mediainfo ffmpeg x264 \
+            build-essential git libpcre3-dev zlib1g-dev libssl-dev dnsmasq \
+            # gettext-base provides 'envsubst', used by nginx.sh
+            gettext-base \
+         && apt-get clean
 
 ADD         build-nginx.sh /usr/src/build-nginx.sh
 RUN         /usr/src/build-nginx.sh
