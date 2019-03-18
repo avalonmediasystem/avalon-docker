@@ -6,7 +6,7 @@ volumes:
   fedora:
   work:
   solr:
-    
+
 services:
   db:
     image: avalonmediasystem/db:fedora4
@@ -18,31 +18,25 @@ services:
       - FEDORA_DB_PASSWORD
       - PGDATA=/data
       - POSTGRES_USER=postgres
-    ports:
-      - "5432:5432"
   fedora:
     image: avalonmediasystem/fedora:4.7.5
-    build: 
+    build:
       context: ./fedora
       args:
-        - FEDORA_DB_PASSWORD
         - FEDORA_VERSION=4.7.5
     environment:
-      - JAVA_OPTIONS=${JAVA_OPTIONS} -Dfcrepo.postgresql.password=${FEDORA_DB_PASSWORD} -Dfcrepo.postgresql.username=fedora -Dfcrepo.postgresql.host=db -Dfcrepo.modeshape.configuration=classpath:/config/jdbc-postgresql/repository.json -Dfcrepo.home=/var/lib/jetty/data
+      - FEDORA_DB_PASSWORD
+      - JAVA_OPTIONS=-Dfcrepo.postgresql.password=${FEDORA_DB_PASSWORD} -Dfcrepo.postgresql.username=fedora -Dfcrepo.postgresql.host=db -Dfcrepo.modeshape.configuration=classpath:/config/jdbc-postgresql/repository.json -Dfcrepo.home=/data
     depends_on:
       - db
     volumes:
-      - fedora:/var/lib/jetty/data
-    ports:
-      - "8984:8080"
+      - fedora:/data
   solr:
     image: avalonmediasystem/solr:latest
-    build: 
+    build:
       context: ./solr
       args:
         - AVALON_BRANCH
-    ports:
-      - "8983:8983"
     volumes:
       - solr:/opt/solr/server/solr/mycores
     entrypoint:
@@ -52,7 +46,7 @@ services:
       - /opt/solr/avalon_conf
   matterhorn:
     image: avalonmediasystem/matterhorn
-    build: 
+    build:
       context: ./matterhorn
       args:
         - MATTERHORN_VER=1.4
@@ -61,8 +55,6 @@ services:
       - ./masterfiles:/masterfiles
       - streaming:/streamfiles
       - work:/work
-    ports:
-      - "8080:8080"
   hls:
     image: avalonmediasystem/nginx
     build:
@@ -73,11 +65,9 @@ services:
        - "8880:80"
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
   avalon:
     image: avalonmediasystem/avalon:6.4.3
-    build: 
+    build:
       context: ./avalon
       args:
         - AVALON_BRANCH
