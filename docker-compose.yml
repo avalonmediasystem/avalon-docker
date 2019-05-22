@@ -1,34 +1,22 @@
-version: '2'
+version: '3.2'
 
 volumes:
   streaming:
-  database:
   fedora:
   work:
   solr:
 
 services:
-  db:
-    image: avalonmediasystem/db:fedora4
-    build: ./db
-    volumes:
-      - database:/data
-    environment:
-      - AVALON_DB_PASSWORD
-      - FEDORA_DB_PASSWORD
-      - PGDATA=/data
-      - POSTGRES_USER=postgres
   fedora:
-    image: avalonmediasystem/fedora:4.7.5
-    build:
-      context: ./fedora
-      args:
-        - FEDORA_VERSION=4.7.5
+    image: nulib/fcrepo4:s3fix 
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "${FEDORA_LOGGROUP}"
+        awslogs-create-group: "true"
     environment:
-      - FEDORA_DB_PASSWORD
-      - JAVA_OPTIONS=-Dfcrepo.postgresql.password=${FEDORA_DB_PASSWORD} -Dfcrepo.postgresql.username=fedora -Dfcrepo.postgresql.host=db -Dfcrepo.modeshape.configuration=classpath:/config/jdbc-postgresql/repository.json -Dfcrepo.home=/data
-    depends_on:
-      - db
+      - MODESHAPE_CONFIG=classpath:/config/jdbc-postgresql-s3/repository.json
+      - JAVA_OPTIONS=${FEDORA_OPTIONS}
     volumes:
       - fedora:/data
   solr:
@@ -36,7 +24,7 @@ services:
     build:
       context: ./solr
       args:
-        - AVALON_BRANCH
+        - AVALON_BRANCH=develop
     volumes:
       - solr:/opt/solr/server/solr/mycores
     entrypoint:
@@ -44,23 +32,14 @@ services:
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
-  matterhorn:
-    image: avalonmediasystem/matterhorn
-    build:
-      context: ./matterhorn
-      args:
-        - MATTERHORN_VER=1.4
-        - MATTERHORN_BRANCH=1.4.x
-    volumes:
-      - ./masterfiles:/masterfiles
-      - streaming:/streamfiles
-      - work:/work
+    ports:
+      - 8983:8983
   hls:
     image: avalonmediasystem/nginx
     build:
       context: ./nginx
     environment:
-      - AVALON_STREAMING_BUCKET=ngix-vod-streaming
+      - AVALON_STREAMING_BUCKET=${AVALON_STREAMING_BUCKET}
     volumes:
       - streaming:/data
     ports:
@@ -69,14 +48,20 @@ services:
     image: redis:alpine
   avalon:
     image: avalonmediasystem/avalon:6.5
+    env_file:
+      - .env_avalon
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "${AVALON_LOGGROUP}"
+        awslogs-create-group: "true"
     build:
       context: ./avalon
       args:
-        - AVALON_BRANCH
-        - SECRET_KEY_BASE
+        - AVALON_BRANCH=develop
+        - SECRET_KEY_BASE=8816bf03a9da7e8b2e42095c876446b0b790296247e410181618b429a759fbeae1e16f2264195fc1765211e2d56a08ee29c02d1a135b45d45f5da7a7e0516d49
         - BASE_URL
     depends_on:
-      - db
       - fedora
       - solr
       - redis
@@ -84,24 +69,20 @@ services:
       - APP_NAME
       - SECRET_KEY_BASE
       - ASSET_HOST
-      - SETTINGS__DOMAIN
-      - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
-      - SETTINGS__DROPBOX__PATH=/masterfiles/dropbox
-      - SETTINGS__DROPBOX__UPLOAD_URI=./masterfiles/dropbox
+      - DATABASE_URL=${DATABASE_URL}
       - EMAIL_COMMENTS
       - EMAIL_NOTIFICATION
       - EMAIL_SUPPORT
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
-      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora/rest
+      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/rest
       - SETTINGS__FFMPEG_PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
-      - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
       - SETTINGS__MATTERHORN__MEDIA_PATH=/masterfiles
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ENV=production
-      - SETTINGS__REDIS__HOST=redis
+      - SETTINGS__REDIS__HOST=${ELASTICACHE_HOST}
       - SETTINGS__REDIS__PORT=6379
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
@@ -112,11 +93,10 @@ services:
       - SMTP_PORT
       - SMTP_USER_NAME
       - SOLR_URL=http://solr:8983/solr/avalon
-      - SETTINGS__STREAMING__CONTENT_PATH=/streamfiles
-      - SETTINGS__STREAMING__HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
+      - SETTINGS__STREAMING__CONTENT_PATH=/
       - SETTINGS__STREAMING__SERVER=nginx
       - SYSTEM_GROUPS=administrator,group_manager,manager
-      - SECRET_KEY_BASE=112f7d33c8864e0ef22910b45014a1d7925693ef549850974631021864e2e67b16f44aa54a98008d62f6874360284d00bb29dc08c166197d043406b42190188a
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - Z3950_ATTRIBUTE
       - Z3950_DATABASE
       - Z3950_HOST
