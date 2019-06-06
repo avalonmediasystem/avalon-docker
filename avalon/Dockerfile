@@ -1,5 +1,9 @@
-FROM        phusion/passenger-ruby24
+FROM        phusion/passenger-ruby25
 LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
+
+RUN         curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+         && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+         && curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN         apt-get update && apt-get install -y \
             mediainfo \
             ffmpeg \
@@ -8,6 +12,8 @@ RUN         apt-get update && apt-get install -y \
             pkg-config \
             lsof \
             sendmail \
+            yarn \
+            nodejs \
          && rm -rf /var/lib/apt/lists/* \
          && apt-get clean
 RUN         ln -s /usr/bin/lsof /usr/sbin/ && \
@@ -30,13 +36,14 @@ RUN         cd avalon && \
               cd ..
 ARG         BASE_URL
 ARG         DATABASE_URL
-ARG         SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83de96289b30550a266ac04488d7086322efbe573738e7b3ae005b2e3d9afd718aa337fa5e329cf 
-RUN         cd avalon && \
-              mkdir -p tmp/pids && \
-              bundle exec whenever -w -f config/docker_schedule.rb && \
-              bundle exec rake assets:precompile && \
-              cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml && \
-              cd ..
+ARG         SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83de96289b30550a266ac04488d7086322efbe573738e7b3ae005b2e3d9afd718aa337fa5e329cf
+RUN         cd avalon \
+         && mkdir -p tmp/pids \
+         && touch log/production.log \
+         && ls -alh log \
+         && bundle exec whenever -w -f config/docker_schedule.rb \
+         && bundle exec rake assets:precompile \
+         && cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
 USER        root
 RUN         chown -R app:app /home/app/avalon
 ADD         ./avalon.conf /etc/nginx/sites-available/avalon
