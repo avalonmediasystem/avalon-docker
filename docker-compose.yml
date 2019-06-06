@@ -66,7 +66,7 @@ services:
   redis:
     image: redis:alpine
   avalon:
-    image: avalonmediasystem/avalon:6.4.3
+    image: avalonmediasystem/avalon:6.5
     build:
       context: ./avalon
       args:
