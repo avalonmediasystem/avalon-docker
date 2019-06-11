@@ -1,18 +1,13 @@
 # avalon-docker
-The project contains the Dockerfiles for all the necessary components of [Avalon Media System](http://github.com/avalonmediasystem/avalon)
+The project contains the Dockerfiles for all the necessary components of [Avalon Media System](http://github.com/avalonmediasystem/avalon). For developing with Avalon, the docker-compose script in [Avalon 6.x](http://github.com/avalonmediasystem/avalon) and [Avalon 7.x](http://github.com/samvera-labs/avalon-bundle) are recommended.
 
-## Usage
-1. Clone this Repo and checkout the desired branch
-2. Copy dotenv.example to .env and fill in the passwords and Rails secrect key base.
+## Prerequisite
 
-### On Linux
+### Linux
 1. Install [Docker](https://docs.docker.com/engine/installation/linux/centos/)
 2. Install [Docker-Compose](https://docs.docker.com/compose/install/)
-3. From inside the avalon-docker directory
-  * `docker-compose pull` to get the prebuilt images from [Dockerhub](dockerhub.com)
-  * `docker-compose up` to stand up the stack
 
-### On a Mac
+### OSX
 * Install [Docker Toolbox for OS X](https://www.docker.com/products/docker-toolbox)
 * Run
   * `docker-machine stop default`
@@ -20,9 +15,13 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
   * `docker-machine env`
   * `eval $(docker-machine env)`
   * `docker-machine start default`
-  * `docker-compose up`
-* The docker container will be accessible via `http://192.168.99.100:8888/`
-* if anytime OS X says docker is not started, rerun `eval $(docker-machine env)
+
+## Usage
+1. Clone this Repo
+2. Copy dotenv.example to .env and fill in the passwords and Rails secrect key base.
+3. From inside the avalon-docker directory
+  * `docker-compose pull` to get the prebuilt images from [Dockerhub](dockerhub.com)
+  * `docker-compose up` to stand up the stack
 
 ### Notes
 * `docker-compose logs <service_name>` to see the container(s) logs
