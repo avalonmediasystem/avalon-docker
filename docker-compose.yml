@@ -9,6 +9,8 @@ volumes:
 services:
   fedora:
     image: nulib/fcrepo4:s3fix 
+    env_file:
+      - .env
     logging:
       driver: "awslogs"
       options:
@@ -35,7 +37,9 @@ services:
     ports:
       - 8983:8983
   hls:
-    image: avalonmediasystem/nginx
+    image: avalonmediasystem/nginx:aws
+    env_file:
+      - .env
     build:
       context: ./nginx
     environment:
@@ -49,7 +53,7 @@ services:
   avalon:
     image: avalonmediasystem/avalon:6.5
     env_file:
-      - .env_avalon
+      - .env
     logging:
       driver: "awslogs"
       options:
