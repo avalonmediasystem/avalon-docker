@@ -23,6 +23,8 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
   * `docker-compose pull` to get the prebuilt images from [Dockerhub](dockerhub.com)
   * `docker-compose up` to stand up the stack
 
+To access the site, visit http://localhost:80 in your browser.
+
 ### Notes
 * `docker-compose logs <service_name>` to see the container(s) logs
 * `docker-compose build --no-cache <service_name>` to build the image(s) from scratch
