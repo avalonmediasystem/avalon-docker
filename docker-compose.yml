@@ -8,7 +8,7 @@ volumes:
 
 services:
   fedora:
-    image: nulib/fcrepo4:s3fix 
+    image: nulib/fcrepo4:4.7.5-s3fix
     env_file:
       - .env
     logging:

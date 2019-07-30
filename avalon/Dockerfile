@@ -32,7 +32,7 @@ ARG         RAILS_ENV=production
 RUN         cd avalon && \
               gem install bundler && \
               bundle config build.nokogiri --use-system-libraries && \
-              bundle install --path=vendor/gems --with postgres --without development test profiling mysql && \
+              bundle install --path=vendor/gems --with postgres aws --without development test profiling mysql && \
               cd ..
 ARG         BASE_URL
 ARG         DATABASE_URL
