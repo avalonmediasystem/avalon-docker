@@ -51,7 +51,7 @@ services:
   redis:
     image: redis:alpine
   avalon:
-    image: avalonmediasystem/avalon:6.5
+    image: avalonmediasystem/avalon:6.5-aws
     env_file:
       - .env
     logging:
@@ -72,15 +72,15 @@ services:
     environment:
       - APP_NAME
       - SECRET_KEY_BASE
-      - ASSET_HOST
       - DATABASE_URL=${DATABASE_URL}
-      - EMAIL_COMMENTS
-      - EMAIL_NOTIFICATION
-      - EMAIL_SUPPORT
+      - SETTINGS__EMAIL__MAILER=:aws_sdk
+      - SETTINGS__EMAIL__COMMENTS
+      - SETTINGS__EMAIL__NOTIFICATION
+      - SETTINGS__EMAIL__SUPPORT
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
       - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/rest
-      - SETTINGS__FFMPEG_PATH=/usr/bin/ffmpeg
+      - SETTINGS__FFMPEG__PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
       - SETTINGS__MATTERHORN__MEDIA_PATH=/masterfiles
