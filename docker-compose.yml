@@ -1,10 +1,7 @@
 version: '3.2'
 
 volumes:
-  streaming:
   fedora:
-  work:
-  solr:
 
 services:
   fedora:
@@ -28,14 +25,12 @@ services:
       args:
         - AVALON_BRANCH=develop
     volumes:
-      - solr:/opt/solr/server/solr/mycores
+      - /srv/solr_data:/opt/solr/server/solr/mycores
     entrypoint:
       - docker-entrypoint.sh
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
-    ports:
-      - 8983:8983
   hls:
     image: avalonmediasystem/nginx:aws
     env_file:
@@ -44,8 +39,6 @@ services:
       context: ./nginx
     environment:
       - AVALON_STREAMING_BUCKET=${AVALON_STREAMING_BUCKET}
-    volumes:
-      - streaming:/data
     ports:
        - "8880:80"
   redis:
@@ -105,8 +98,5 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
-    volumes:
-      - ./masterfiles:/masterfiles
-      - ./gems:/gems
     ports:
       - "80:80"
