@@ -36,13 +36,12 @@ RUN         cd avalon && \
               cd ..
 ARG         BASE_URL
 ARG         DATABASE_URL
-ARG         SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83de96289b30550a266ac04488d7086322efbe573738e7b3ae005b2e3d9afd718aa337fa5e329cf
 RUN         cd avalon \
          && mkdir -p tmp/pids \
          && touch log/production.log \
          && ls -alh log \
          && bundle exec whenever -w -f config/docker_schedule.rb \
-         && bundle exec rake assets:precompile \
+         && bundle exec rake assets:precompile SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)') \
          && cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
 USER        root
 RUN         chown -R app:app /home/app/avalon
