@@ -8,13 +8,7 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
 2. Install [Docker-Compose](https://docs.docker.com/compose/install/)
 
 ### OSX
-* Install [Docker Toolbox for OS X](https://www.docker.com/products/docker-toolbox)
-* Run
-  * `docker-machine stop default`
-  * `docker-machine start default`
-  * `docker-machine env`
-  * `eval $(docker-machine env)`
-  * `docker-machine start default`
+* Install [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/)
 
 ## Usage
 1. Clone this Repo
