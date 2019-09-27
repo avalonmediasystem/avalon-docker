@@ -11,13 +11,13 @@ http {
   server {
     listen $AVALON_STREAMING_PORT;
     
-    error_log stderr debug;
+    error_log stderr info;
 
     vod_mode remote;
     vod_upstream_location /s3;
     vod_last_modified 'Sun, 19 Nov 2000 08:52:00 GMT';
     vod_last_modified_types *;
-    vod_metadata_cache metadata_cache 512m;
+    vod_metadata_cache metadata_cache 1024m;
     vod_response_cache response_cache 128m;
     vod_hls_absolute_index_urls off;
     vod_hls_absolute_master_urls off;
