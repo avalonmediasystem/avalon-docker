@@ -1,4 +1,4 @@
-FROM        phusion/baseimage:latest
+FROM        phusion/baseimage:0.11
 MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
 RUN         apt-get update && apt-get upgrade -y \
          && apt-get install -y mediainfo ffmpeg x264 \

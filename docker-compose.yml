@@ -41,8 +41,12 @@ services:
       - AVALON_STREAMING_BUCKET=${AVALON_STREAMING_BUCKET}
     ports:
        - "8880:80"
-  redis:
-    image: redis:alpine
+  cache:
+    image: nginx
+    volumes:
+      - ./cache.conf:/etc/nginx/conf.d/nginx.conf
+    ports:
+      - "80:80"
   avalon:
     image: avalonmediasystem/avalon:6.5-aws
     env_file:
@@ -61,7 +65,6 @@ services:
     depends_on:
       - fedora
       - solr
-      - redis
     environment:
       - APP_NAME
       - SECRET_KEY_BASE
@@ -98,5 +101,3 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
-    ports:
-      - "80:80"
