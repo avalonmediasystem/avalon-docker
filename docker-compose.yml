@@ -26,11 +26,17 @@ services:
         - AVALON_BRANCH=develop
     volumes:
       - /srv/solr_data:/opt/solr/server/solr/mycores
+      - /srv/solr_backups:/backups
     entrypoint:
       - docker-entrypoint.sh
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
+  jobs:
+    image: mcuadros/ofelia:latest
+    volumes:
+      - ./jobs.ini:/etc/ofelia/config.ini
+      - /var/run/docker.sock:/var/run/docker.sock
   hls:
     image: avalonmediasystem/nginx:aws
     env_file:
