@@ -39,6 +39,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   hls:
     image: avalonmediasystem/nginx:aws
+    depends_on:
+      - avalon
     env_file:
       - .env
     build:
