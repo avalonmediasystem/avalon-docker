@@ -4,7 +4,6 @@ volumes:
   streaming:
   database:
   fedora:
-  work:
   solr:
 
 services:
@@ -44,17 +43,6 @@ services:
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
-  matterhorn:
-    image: avalonmediasystem/matterhorn
-    build:
-      context: ./matterhorn
-      args:
-        - MATTERHORN_VER=1.4
-        - MATTERHORN_BRANCH=1.4.x
-    volumes:
-      - ./masterfiles:/masterfiles
-      - streaming:/streamfiles
-      - work:/work
   hls:
     image: avalonmediasystem/nginx
     build:
@@ -65,8 +53,8 @@ services:
        - "8880:80"
   redis:
     image: redis:alpine
-  avalon:
-    image: avalonmediasystem/avalon:6.5
+  avalon: &avalon
+    image: avalonmediasystem/avalon:7.0
     build:
       context: ./avalon
       args:
@@ -86,9 +74,11 @@ services:
       - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@db/avalon
       - SETTINGS__DROPBOX__PATH=/masterfiles/dropbox
       - SETTINGS__DROPBOX__UPLOAD_URI=./masterfiles/dropbox
-      - EMAIL_COMMENTS
-      - EMAIL_NOTIFICATION
-      - EMAIL_SUPPORT
+      - SETTINGS__ENCODING__WORKING_FILE_PATH=/masterfiles
+      - SETTINGS__EMAIL__COMMENTS
+      - SETTINGS__EMAIL__NOTIFICATION
+      - SETTINGS__EMAIL__SUPPORT
+      - ENCODE_WORK_DIR=/streamfiles
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
       - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora/rest
@@ -96,13 +86,13 @@ services:
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
       - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
-      - SETTINGS__MATTERHORN__MEDIA_PATH=/masterfiles
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ENV=production
       - SETTINGS__REDIS__HOST=redis
       - SETTINGS__REDIS__PORT=6379
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
+      - SETTINGS__STREAMING__STREAM_TOKEN_TTL=20
       - SMTP_DOMAIN
       - SMTP_ENABLE_STARTTLS_AUTO
       - SMTP_OPENSSL_VERIFY_MODE
@@ -120,6 +110,11 @@ services:
       - Z3950_PORT
     volumes:
       - ./masterfiles:/masterfiles
+      - streaming:/streamfiles
       - ./gems:/gems
     ports:
       - "80:80"
+  worker:
+    <<: *avalon
+    command: su -m -c "cd /home/app/avalon && RAILS_ENV=production bundle exec sidekiq -C config/sidekiq.yml" app
+    ports: []
