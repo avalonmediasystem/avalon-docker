@@ -25,6 +25,7 @@ ARG         AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
 ARG         AVALON_BRANCH=master
 WORKDIR     /home/app
 USER        app
+ARG         AVALON_REV
 RUN         git clone --branch=${AVALON_BRANCH} --depth=1 ${AVALON_REPO}
 ADD         Gemfile.local /home/app/avalon/
 ADD         config /home/app/avalon/config/

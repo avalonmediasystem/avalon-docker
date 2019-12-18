@@ -55,8 +55,8 @@ services:
       - ./cache.conf:/etc/nginx/conf.d/nginx.conf
     ports:
       - "80:80"
-  avalon:
-    image: avalonmediasystem/avalon:6.5-aws
+  avalon: &avalon
+    image: avalonmediasystem/avalon:7.0-aws
     env_file:
       - .env
     logging:
@@ -81,6 +81,7 @@ services:
       - SETTINGS__EMAIL__COMMENTS
       - SETTINGS__EMAIL__NOTIFICATION
       - SETTINGS__EMAIL__SUPPORT
+      - ENCODE_WORK_DIR=/tmp
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
       - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/rest
@@ -109,3 +110,6 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
+  worker:
+    <<: *avalon
+    command: su -m -c "cd /home/app/avalon && RAILS_ENV=production bundle exec sidekiq -C config/sidekiq.yml" app
