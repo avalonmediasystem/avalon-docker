@@ -4,6 +4,6 @@
 touch /var/spool/cron/crontabs/app
 
 cd /home/app/avalon
-RAILS_ENV=production su -m -c "bundle exec rake db:migrate" app
+su -m -c "bundle exec rake db:migrate" app
 
-tail -f /home/app/avalon/log/${RAILS_ENV}.log
+#tail -f /home/app/avalon/log/${RAILS_ENV}.log
