@@ -110,8 +110,8 @@ services:
       - Z3950_PORT
     volumes:
       - ./masterfiles:/masterfiles
-      - streaming:/streamfiles
       - ./gems:/gems
+      - streaming:/streamfiles
     ports:
       - "80:80"
   worker:

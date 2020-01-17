@@ -11,6 +11,6 @@ touch /var/spool/cron/crontabs/app
 
 chmod 0777 -R /masterfiles
 chown -R app /masterfiles
-cd /home/app/avalon
 
-RAILS_ENV=production su -m -c "bundle exec rake db:migrate" app
+cd /home/app/avalon
+su -m -c "bundle exec rake db:migrate" app

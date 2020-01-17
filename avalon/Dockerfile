@@ -14,6 +14,7 @@ RUN         apt-get update && apt-get install -y \
             sendmail \
             yarn \
             nodejs \
+            imagemagick \
          && rm -rf /var/lib/apt/lists/* \
          && apt-get clean
 RUN         ln -s /usr/bin/lsof /usr/sbin/ && \
@@ -37,7 +38,6 @@ RUN         cd avalon && \
 ARG         BASE_URL
 ARG         DATABASE_URL
 RUN         cd avalon \
-         && mkdir -p tmp/pids \
          && bundle exec whenever -w -f config/docker_schedule.rb \
          && bundle exec rake assets:precompile SECRET_KEY_BASE=$(ruby -r 'securerandom' -e 'puts SecureRandom.hex(64)') \
          && cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
