@@ -42,10 +42,9 @@ ARG         SECRET_KEY_BASE=3fe397575565365108556c3e5549f139e8078a8ec8fd2675a83d
 RUN         cd avalon \
          && mkdir -p tmp/pids \
          && bundle exec whenever -w -f config/docker_schedule.rb \
-         && bundle exec rake assets:precompile \
-         && cp config/controlled_vocabulary.yml.example config/controlled_vocabulary.yml
+         && bundle exec rake assets:precompile
 USER        root
-RUN         chown -R app:app /home/app/avalon
+# RUN         chown -R app:app /home/app/avalon
 ADD         ./avalon.conf /etc/nginx/sites-available/avalon
 ADD         ./nginx_env.conf /etc/nginx/main.d/env.conf
 ADD         rails_init.sh /etc/my_init.d/30_rails_init.sh
