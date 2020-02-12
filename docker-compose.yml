@@ -6,8 +6,6 @@ volumes:
 services:
   fedora:
     image: nulib/fcrepo4:4.7.5-s3fix
-    env_file:
-      - .env
     logging:
       driver: "awslogs"
       options:
@@ -41,8 +39,6 @@ services:
     image: avalonmediasystem/nginx:aws
     depends_on:
       - avalon
-    env_file:
-      - .env
     build:
       context: ./nginx
     environment:
@@ -56,9 +52,7 @@ services:
     ports:
       - "80:80"
   avalon: &avalon
-    image: avalonmediasystem/avalon:7.0-aws
-    env_file:
-      - .env
+    image: ${AVALON_DOCKER_REPO}:${AVALON_REV}
     logging:
       driver: "awslogs"
       options:
@@ -67,10 +61,10 @@ services:
     build:
       context: ./avalon
       args:
-        - AVALON_BRANCH
-        - SECRET_KEY_BASE=8816bf03a9da7e8b2e42095c876446b0b790296247e410181618b429a759fbeae1e16f2264195fc1765211e2d56a08ee29c02d1a135b45d45f5da7a7e0516d49
+        - AVALON_BRANCH=${AVALON_BRANCH}
+        - AVALON_REV=${AVALON_REV}
+        - AVALON_REPO=${AVALON_REPO}
         - BASE_URL
-        - AVALON_REV
     depends_on:
       - fedora
       - solr

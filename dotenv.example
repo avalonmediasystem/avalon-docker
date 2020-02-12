@@ -1,6 +1,9 @@
 # Required Settings
-APP_NAME=avalon
-AVALON_BRANCH=master
+AVALON_DOCKER_REPO=avalonmediasystem/avalon:7.0-aws
+AVALON_BRANCH=demo
+AVALON_REV=2
+AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
+
 SETTINGS__DOMAIN=http://localhost:8888/
 STREAMING_HOST=localhost
 AVALON_DB_PASSWORD=
