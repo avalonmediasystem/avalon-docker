@@ -60,6 +60,9 @@ services:
         awslogs-create-group: "true"
     build:
       context: ./avalon
+      cache_from:
+        - ${AVALON_DOCKER_REPO}:${AVALON_DOCKER_CACHE_TAG}
+        - ${AVALON_DOCKER_REPO}:latest
       args:
         - AVALON_BRANCH=${AVALON_BRANCH}
         - AVALON_REV=${AVALON_REV}
