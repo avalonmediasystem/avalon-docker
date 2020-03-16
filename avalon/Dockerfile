@@ -48,3 +48,4 @@ ADD         ./avalon.conf /etc/nginx/sites-available/avalon
 ADD         ./nginx_env.conf /etc/nginx/main.d/env.conf
 ADD         rails_init.sh /etc/my_init.d/30_rails_init.sh
 
+HEALTHCHECK --interval=1m30s --timeout=10s --start-period=5m CMD curl --fail -s http://localhost || exit 1

@@ -16,12 +16,23 @@ services:
       - JAVA_OPTIONS=${FEDORA_OPTIONS}
     volumes:
       - fedora:/data
+    healthcheck:
+      test: curl --fail -s http://localhost:8080 || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+    restart: always
   solr:
     image: avalonmediasystem/solr:latest
     build:
       context: ./solr
       args:
         - AVALON_BRANCH=develop
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "${SOLR_LOGGROUP}"
+        awslogs-create-group: "true"
     volumes:
       - /srv/solr_data:/opt/solr/server/solr/mycores
       - /srv/solr_backups:/backups
@@ -30,29 +41,43 @@ services:
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
+    healthcheck:
+      test: curl --fail -s http://localhost:8983 || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+    restart: always
   jobs:
     image: mcuadros/ofelia:latest
     volumes:
       - ./jobs.ini:/etc/ofelia/config.ini
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
   hls:
     image: avalonmediasystem/nginx:aws
     depends_on:
       - avalon
     build:
       context: ./nginx
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "${HLS_LOGGROUP}"
+        awslogs-create-group: "true"
     environment:
       - AVALON_STREAMING_BUCKET=${AVALON_STREAMING_BUCKET}
     ports:
-       - "8880:80"
+      - "8880:80"
+    restart: always
   cache:
     image: nginx
     volumes:
       - ./cache.conf:/etc/nginx/conf.d/nginx.conf
     ports:
       - "80:80"
+    restart: always
   avalon: &avalon
-    image: ${AVALON_DOCKER_REPO}:${AVALON_REV}
+    image: ${AVALON_DOCKER_REPO}:${AVALON_REV:-latest}
     logging:
       driver: "awslogs"
       options:
@@ -75,6 +100,7 @@ services:
       - APP_NAME
       - SECRET_KEY_BASE
       - DATABASE_URL=${DATABASE_URL}
+      - SETTINGS__DOMAIN
       - SETTINGS__EMAIL__MAILER=:aws_sdk
       - SETTINGS__EMAIL__COMMENTS
       - SETTINGS__EMAIL__NOTIFICATION
@@ -102,12 +128,21 @@ services:
       - SOLR_URL=http://solr:8983/solr/avalon
       - SETTINGS__STREAMING__CONTENT_PATH=/
       - SETTINGS__STREAMING__SERVER=nginx
+      - SETTINGS__TIMELINER__TIMELINER_URL
       - SYSTEM_GROUPS=administrator,group_manager,manager
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - Z3950_ATTRIBUTE
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
+    restart: always
   worker:
     <<: *avalon
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "${WORKER_LOGGROUP}"
+        awslogs-create-group: "true"
     command: su -m -c "cd /home/app/avalon && RAILS_ENV=production bundle exec sidekiq -C config/sidekiq.yml" app
+    healthcheck:
+      disable: true

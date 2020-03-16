@@ -61,6 +61,7 @@ http {
     }
 
     location /status {
+      access_log off;
       vod_status;
     }
 
