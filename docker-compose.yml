@@ -47,6 +47,8 @@ services:
     image: avalonmediasystem/nginx
     build:
       context: ./nginx
+    environment:
+      AVALON_DOMAIN: http://avalon:3000
     volumes:
       - streaming:/data
     ports:
@@ -54,18 +56,15 @@ services:
   redis:
     image: redis:alpine
   avalon: &avalon
-    image: avalonmediasystem/avalon:7.0
-    build:
-      context: ./avalon
-      args:
-        - AVALON_BRANCH
-        - SECRET_KEY_BASE
-        - BASE_URL
+    image: avalonmediasystem/avalon:7.1
+    command: bash -c "bundle exec rake db:migrate && rails server -b 0.0.0.0"
     depends_on:
       - db
       - fedora
       - solr
       - redis
+      - hls
+      - jobs
     environment:
       - APP_NAME
       - SECRET_KEY_BASE
@@ -88,6 +87,8 @@ services:
       - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+      - RAILS_SERVE_STATIC_FILES=true
       - SETTINGS__REDIS__HOST=redis
       - SETTINGS__REDIS__PORT=6379
       - SMTP_ADDRESS
@@ -110,11 +111,15 @@ services:
       - Z3950_PORT
     volumes:
       - ./masterfiles:/masterfiles
-      - ./gems:/gems
       - streaming:/streamfiles
     ports:
-      - "80:80"
+      - "80:3000"
   worker:
     <<: *avalon
-    command: su -m -c "cd /home/app/avalon && RAILS_ENV=production bundle exec sidekiq -C config/sidekiq.yml" app
+    command: bundle exec sidekiq -C config/sidekiq.yml
     ports: []
+  jobs:
+    image: mcuadros/ofelia:latest
+    volumes:
+      - ./jobs.ini:/etc/ofelia/config.ini
+      - /var/run/docker.sock:/var/run/docker.sock
