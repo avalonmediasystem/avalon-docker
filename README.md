@@ -1,5 +1,5 @@
 # avalon-docker
-The project contains the Dockerfiles for all the necessary components of [Avalon Media System](http://github.com/avalonmediasystem/avalon). For developing with Avalon, the docker-compose script in [Avalon 6.x](http://github.com/avalonmediasystem/avalon) and [Avalon 7.x](http://github.com/samvera-labs/avalon-bundle) are recommended.
+The project contains the Dockerfiles for all the necessary components of [Avalon Media System](http://github.com/avalonmediasystem/avalon). For developing with Avalon, the docker-compose script in [Avalon](http://github.com/avalonmediasystem/avalon) and [Avalon Bundle](http://github.com/samvera-labs/avalon-bundle) are recommended.
 
 ## Prerequisite
 
@@ -14,10 +14,11 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
 1. Clone this Repo
 2. Copy dotenv.example to .env and fill in the passwords and Rails secret key base.
 3. From inside the avalon-docker directory
+  * `sudo chmod a+w masterfiles` to setup write permission for shared directory
   * `docker-compose pull` to get the prebuilt images from [Dockerhub](dockerhub.com)
   * `docker-compose up` to stand up the stack
 
-To access the site, visit http://localhost:80 in your browser.
+To access the site, visit http://localhost in your browser.
 
 ### Notes
 * `docker-compose logs <service_name>` to see the container(s) logs
