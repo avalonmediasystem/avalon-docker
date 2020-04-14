@@ -1,7 +1,0 @@
-production:
-  administrator:
-    - archivist1@example.com
-  manager:
-    - archivist1@example.com
-  group_manager:
-    - archivist1@example.com
