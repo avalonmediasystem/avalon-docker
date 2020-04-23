@@ -54,9 +54,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
   hls:
-    image: avalonmediasystem/nginx:aws
-    depends_on:
-      - avalon
+    image: avalonmediasystem/nginx:ecs
     build:
       context: ./nginx
     logging:
@@ -65,7 +63,7 @@ services:
         awslogs-group: "${HLS_LOGGROUP}"
         awslogs-create-group: "true"
     environment:
-      - AVALON_STREAMING_BUCKET=${AVALON_STREAMING_BUCKET}
+      - PROXY_PASS_URL=http://s3-helper/
     ports:
       - "8880:80"
     restart: always

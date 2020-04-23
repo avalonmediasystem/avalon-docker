@@ -29,7 +29,7 @@ http {
     
     location /s3/avalon/ {
       internal;
-      proxy_pass http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/;
+      proxy_pass $PROXY_PASS_URL;
     }
 
     location ~ /avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
@@ -54,7 +54,7 @@ http {
 
     location = /auth {
       resolver 127.0.0.1;
-      proxy_pass $AVALON_DOMAIN/authorize.txt?token=$token&name=$stream;
+      proxy_pass $AUTH_URL/authorize.txt?token=$token&name=$stream;
       proxy_pass_request_body off;
       proxy_set_header Content-Length "";
       proxy_set_header X-Original-URI $request_uri;
