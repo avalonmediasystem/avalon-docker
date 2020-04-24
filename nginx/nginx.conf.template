@@ -5,38 +5,10 @@ daemon off;
 events {
   worker_connections 1024;
 }
-
-rtmp {
-  server {
-    listen 1935;
-    chunk_size 4000;
-
-    application avalon {
-      play /data;
-      on_play $AVALON_DOMAIN/authorize.txt;
-    }
-  }
-}
-  
+ 
 http {
   server {
     listen $AVALON_STREAMING_PORT;
-
-    # This URL provides RTMP statistics in XML
-    location /stat {
-      rtmp_stat all;
-
-      # Use this stylesheet to view XML as web page
-      # in browser
-      rtmp_stat_stylesheet /stat.xsl;
-    }
-
-    location /stat.xsl {
-      # XML stylesheet to view RTMP stats.
-      # Copy stat.xsl wherever you want
-      # and put the full directory path here
-      root /etc/nginx/;
-    }
 
     vod_mode local;
     vod_last_modified 'Sun, 19 Nov 2000 08:52:00 GMT';
@@ -50,10 +22,10 @@ http {
     open_file_cache_min_uses 1;
     open_file_cache_errors   on;
     
-#    location /raw/ {
-#      alias /data/;
-#      autoindex on;
-#    }
+    location /status {
+      access_log off;
+      vod_status;
+    }
     
     location ~ ^/avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
       alias /data/$stream;

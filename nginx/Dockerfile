@@ -1,5 +1,4 @@
-FROM        phusion/baseimage:latest
-MAINTAINER  Michael B. Klein <michael.klein@northwestern.edu>
+FROM        phusion/baseimage:0.11 as builder
 RUN         DEBIAN_FRONTEND=noninteractive; \
             apt-get update \
          && apt-get install -y \ 
@@ -12,11 +11,24 @@ RUN         DEBIAN_FRONTEND=noninteractive; \
             zlib1g-dev \
             libssl-dev \
             dnsmasq \
-            gettext-base \
-         && apt-get clean
+            # gettext-base provides 'envsubst', used by nginx.sh
+            gettext-base
 
 ADD         build-nginx.sh /usr/src/build-nginx.sh
 RUN         /usr/src/build-nginx.sh
+
+
+FROM        phusion/baseimage:0.11
+LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
+
+COPY        --from=builder /usr/local/nginx /usr/local/nginx
+COPY        --from=builder /etc/nginx /etc/nginx
+
+RUN         apt-get update \
+         && apt-get install -y \
+            dnsmasq \
+            gettext-base \
+         && apt-get clean
 
 EXPOSE      1935
 EXPOSE      80
@@ -35,3 +47,5 @@ ADD         nginx.sh /etc/service/nginx/run
 RUN         chmod +x /etc/service/nginx/run
 
 VOLUME      /data
+
+HEALTHCHECK --interval=1m30s --timeout=10s CMD curl --fail -s http://localhost/status || exit 1
