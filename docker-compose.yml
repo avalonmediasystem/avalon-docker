@@ -17,7 +17,7 @@ services:
     volumes:
       - fedora:/data
     healthcheck:
-      test: curl --fail -s http://localhost:8080 || exit 1
+      test: curl --fail -s http://localhost:8080/ || exit 1
       interval: 1m30s
       timeout: 10s
       retries: 3
@@ -42,7 +42,7 @@ services:
       - avalon
       - /opt/solr/avalon_conf
     healthcheck:
-      test: curl --fail -s http://localhost:8983 || exit 1
+      test: curl --fail -s http://localhost:8983/ || exit 1
       interval: 1m30s
       timeout: 10s
       retries: 3
@@ -66,6 +66,7 @@ services:
         awslogs-create-group: "true"
     environment:
       - AVALON_STREAMING_BUCKET=${AVALON_STREAMING_BUCKET}
+      - AVALON_DOMAIN=http://avalon:3000
     ports:
       - "8880:80"
     restart: always
@@ -78,30 +79,24 @@ services:
     restart: always
   avalon: &avalon
     image: ${AVALON_DOCKER_REPO}:${AVALON_REV:-latest}
+    command: bash -c "rake db:migrate; rails server -b 0.0.0.0"
+    env_file:
+      - .env
     logging:
       driver: "awslogs"
       options:
         awslogs-group: "${AVALON_LOGGROUP}"
         awslogs-create-group: "true"
-    build:
-      context: ./avalon
-      cache_from:
-        - ${AVALON_DOCKER_REPO}:${AVALON_DOCKER_CACHE_TAG}
-        - ${AVALON_DOCKER_REPO}:latest
-      args:
-        - AVALON_BRANCH=${AVALON_BRANCH}
-        - AVALON_REV=${AVALON_REV}
-        - AVALON_REPO=${AVALON_REPO}
-        - BASE_URL
     depends_on:
       - fedora
       - solr
     environment:
       - APP_NAME
+      - AWS_REGION
       - SECRET_KEY_BASE
       - DATABASE_URL=${DATABASE_URL}
       - SETTINGS__DOMAIN
-      - SETTINGS__EMAIL__MAILER=:aws_sdk
+      - SETTINGS__EMAIL__MAILER=aws_sdk
       - SETTINGS__EMAIL__COMMENTS
       - SETTINGS__EMAIL__NOTIFICATION
       - SETTINGS__EMAIL__SUPPORT
@@ -112,9 +107,9 @@ services:
       - SETTINGS__FFMPEG__PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
-      - SETTINGS__MATTERHORN__MEDIA_PATH=/masterfiles
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
       - SETTINGS__REDIS__HOST=${ELASTICACHE_HOST}
       - SETTINGS__REDIS__PORT=6379
       - SMTP_ADDRESS
@@ -126,6 +121,7 @@ services:
       - SMTP_PORT
       - SMTP_USER_NAME
       - SOLR_URL=http://solr:8983/solr/avalon
+      - SETTINGS__ENCODING__PRESETS_PATH=config/elastic_transcoder_presets.yml
       - SETTINGS__STREAMING__CONTENT_PATH=/
       - SETTINGS__STREAMING__SERVER=nginx
       - SETTINGS__TIMELINER__TIMELINER_URL
@@ -135,6 +131,11 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
+    healthcheck:
+      test: curl --fail -s http://localhost:3000/ || exit 1
+      interval: 2m30s
+      timeout: 10s
+      retries: 3
     restart: always
   worker:
     <<: *avalon
@@ -143,6 +144,7 @@ services:
       options:
         awslogs-group: "${WORKER_LOGGROUP}"
         awslogs-create-group: "true"
-    command: su -m -c "cd /home/app/avalon && RAILS_ENV=production bundle exec sidekiq -C config/sidekiq.yml" app
+    command: bundle exec sidekiq -C config/sidekiq.yml
     healthcheck:
       disable: true
+
