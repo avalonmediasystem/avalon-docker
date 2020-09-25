@@ -1,3 +1,6 @@
+# See [UMD-README.md](UMD-README.md)
+
+
 # avalon-docker
 The project contains the Dockerfiles for all the necessary components of [Avalon Media System](http://github.com/avalonmediasystem/avalon). For developing with Avalon, the docker-compose script in [Avalon](http://github.com/avalonmediasystem/avalon) and [Avalon Bundle](http://github.com/samvera-labs/avalon-bundle) are recommended.
 

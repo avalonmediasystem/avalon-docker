@@ -44,7 +44,7 @@ services:
       - avalon
       - /opt/solr/avalon_conf
   hls:
-    image: avalonmediasystem/nginx
+    image: docker.lib.umd.edu/nginx:avalon-7.1-umd-0.alpha4
     build:
       context: ./nginx
     environment:
