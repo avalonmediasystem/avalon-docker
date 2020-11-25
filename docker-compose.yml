@@ -5,14 +5,13 @@ volumes:
 
 services:
   fedora:
-    image: nulib/fcrepo4:4.7.5-s3fix
+    image: avalonmediasystem/fedora:4.7.5-s3fix
     logging:
       driver: "awslogs"
       options:
         awslogs-group: "${FEDORA_LOGGROUP}"
         awslogs-create-group: "true"
     environment:
-      - MODESHAPE_CONFIG=classpath:/config/jdbc-postgresql-s3/repository.json
       - JAVA_OPTIONS=${FEDORA_OPTIONS}
     volumes:
       - fedora:/data
@@ -22,6 +21,11 @@ services:
       timeout: 10s
       retries: 3
     restart: always
+  s3-helper:
+    image: avalonmediasystem/evs-s3helper
+    environment:
+      - S3_REGION=${AWS_REGION}
+      - S3_BUCKET=${AVALON_STREAMING_BUCKET}
   solr:
     image: avalonmediasystem/solr:latest
     build:
@@ -54,9 +58,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
   hls:
-    image: avalonmediasystem/nginx:aws
+    image: avalonmediasystem/nginx:ecs
     depends_on:
       - avalon
+      - s3-helper
     build:
       context: ./nginx
     logging:
@@ -65,8 +70,8 @@ services:
         awslogs-group: "${HLS_LOGGROUP}"
         awslogs-create-group: "true"
     environment:
-      - AVALON_STREAMING_BUCKET=${AVALON_STREAMING_BUCKET}
-      - AVALON_DOMAIN=http://avalon:3000
+      - PROXY_PASS_URL=http://s3-helper:8080
+      - AUTH_URL=http://avalon:3000
     ports:
       - "8880:80"
     restart: always
