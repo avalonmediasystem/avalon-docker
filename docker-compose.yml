@@ -23,6 +23,11 @@ services:
     restart: always
   s3-helper:
     image: avalonmediasystem/evs-s3helper
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "${S3_HELPER_LOGROUP}"
+        awslogs-create-group: "true"
     environment:
       - S3_REGION=${AWS_REGION}
       - S3_BUCKET=${AVALON_STREAMING_BUCKET}
