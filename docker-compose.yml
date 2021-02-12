@@ -17,6 +17,7 @@ services:
       - FEDORA_DB_PASSWORD
       - PGDATA=/data
       - POSTGRES_USER=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
   fedora:
     image: avalonmediasystem/fedora:4.7.5
     build:
