@@ -12,6 +12,7 @@ services:
         awslogs-group: "${FEDORA_LOGGROUP}"
         awslogs-create-group: "true"
     environment:
+      - MODESHAPE_CONFIG=${FEDORA_MODESHAPE_CONFIG}
       - JAVA_OPTIONS=${FEDORA_OPTIONS}
     volumes:
       - fedora:/data
