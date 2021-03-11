@@ -114,6 +114,7 @@ services:
       - Z3950_PORT
     volumes:
       - ./masterfiles:/masterfiles
+      - ./storage:/home/app/avalon/storage #Config another location in storage.yml 
       - streaming:/streamfiles
     ports:
       - "80:3000"
