@@ -57,11 +57,11 @@ services:
   redis:
     image: redis:alpine
   avalon: &avalon
-    image: avalonmediasystem/avalon:7.2
+    image: avalonmediasystem/avalon:7.2.1
     build:
-      context: https://github.com/avalonmediasystem/avalon.git#v7.2
+      context: https://github.com/avalonmediasystem/avalon.git#v7.2.1
       target: prod
-    command: bash -c "bundle exec rake db:migrate && rails server -b 0.0.0.0"
+    command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
     depends_on:
       - db
       - fedora
