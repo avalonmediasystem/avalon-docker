@@ -90,7 +90,7 @@ services:
     restart: always
   avalon: &avalon
     image: ${AVALON_DOCKER_REPO}:${AVALON_REV:-latest}
-    command: bash -c "rake db:migrate; bundle exec rails server -b 0.0.0.0"
+    command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
     env_file:
       - .env
     logging:
