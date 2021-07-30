@@ -59,7 +59,6 @@ services:
   avalon: &avalon
     image: avalonmediasystem/avalon:7.2.1-staging
     build:
-      # context: ../avalon
       context: https://github.com/avalonmediasystem/avalon.git#staging
       target: prod
     command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
