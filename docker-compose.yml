@@ -57,9 +57,9 @@ services:
   redis:
     image: redis:alpine
   avalon: &avalon
-    image: avalonmediasystem/avalon:7.2.1-staging
+    image: avalonmediasystem/avalon:7.2.1-develop
     build:
-      context: https://github.com/avalonmediasystem/avalon.git#staging
+      context: https://github.com/avalonmediasystem/avalon.git#develop
       target: prod
     command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
     depends_on:
