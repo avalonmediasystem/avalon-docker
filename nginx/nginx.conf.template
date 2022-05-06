@@ -15,8 +15,12 @@ http {
     vod_last_modified_types *;
     vod_metadata_cache metadata_cache 512m;
     vod_response_cache response_cache 128m;
+    vod_hls_absolute_index_urls off;
+    vod_hls_absolute_master_urls off;
+
     gzip on;
     gzip_types application/vnd.apple.mpegurl;
+
     open_file_cache          max=1000 inactive=5m;
     open_file_cache_valid    2m;
     open_file_cache_min_uses 1;
