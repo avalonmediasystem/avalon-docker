@@ -5,39 +5,41 @@ daemon off;
 events {
   worker_connections 1024;
 }
- 
+
+
 http {
   server {
     listen $AVALON_STREAMING_PORT;
 
-    vod_mode local;
+    error_log stderr debug;
+
+    vod_mode remote;
+    vod_upstream_location /s3;
     vod_last_modified 'Sun, 19 Nov 2000 08:52:00 GMT';
     vod_last_modified_types *;
-    vod_metadata_cache metadata_cache 512m;
+    vod_metadata_cache metadata_cache 1024m;
     vod_response_cache response_cache 128m;
     vod_hls_absolute_index_urls off;
     vod_hls_absolute_master_urls off;
-
-    gzip on;
-    gzip_types application/vnd.apple.mpegurl;
 
     open_file_cache          max=1000 inactive=5m;
     open_file_cache_valid    2m;
     open_file_cache_min_uses 1;
     open_file_cache_errors   on;
     
-    location /status {
-      access_log off;
-      vod_status;
+    location /s3/avalon/ {
+      internal;
+      proxy_pass $AVALON_STREAMING_BUCKET_URL;
     }
-    
-    location ~ ^/avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
-      alias /data/$stream;
+
+    location ~ /avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
       vod hls;
+      gzip on;
+      gzip_types application/x-mpegURL;
 
       set $token "$arg_token";
       add_header X-Stream-Auth-Token "$token";
-      
+
       sub_filter_types application/vnd.apple.mpegurl;
       sub_filter_once off;
       sub_filter '.ts' ".ts?token=$token";
@@ -46,7 +48,7 @@ http {
       add_header Access-Control-Allow-Headers '*';
       add_header Access-Control-Expose-Headers 'Server,range,Content-Length,Content-Range';
       add_header Access-Control-Allow-Methods 'GET, HEAD, OPTIONS';
-      add_header Access-Control-Allow-Origin '*';
+      add_header Access-Control-Allow-Origin "*";
       expires 100d;
     }
 
@@ -56,6 +58,10 @@ http {
       proxy_pass_request_body off;
       proxy_set_header Content-Length "";
       proxy_set_header X-Original-URI $request_uri;
+    }
+
+    location /status {
+      vod_status;
     }
 
     location /crossdomain.xml {
