@@ -30,6 +30,7 @@ http {
     location /s3/avalon/ {
       internal;
       proxy_pass $AVALON_STREAMING_BUCKET_URL;
+      proxy_set_header Host $http_host;
     }
 
     location ~ /avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
