@@ -119,6 +119,7 @@ services:
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
       - MEDIAINFO_PATH=/usr/bin/mediainfo
+      - RAILS_ADDITIONAL_HOSTS=avalon
       - RAILS_ENV=production
       - RAILS_SERVE_STATIC_FILES=true
       - SETTINGS__REDIS__HOST=${ELASTICACHE_HOST}
