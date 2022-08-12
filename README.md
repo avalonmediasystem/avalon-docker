@@ -4,7 +4,7 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
 ## Prerequisite
 
 ### Linux
-1. Install [Docker](https://docs.docker.com/engine/installation/linux/centos/)
+1. Install [Docker](https://docs.docker.com/engine/install/)
 2. Install [Docker-Compose](https://docs.docker.com/compose/install/)
 
 ### OSX
