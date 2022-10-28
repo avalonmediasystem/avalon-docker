@@ -5,7 +5,7 @@ volumes:
 
 services:
   fedora:
-    image: avalonmediasystem/fedora:4.7.5-s3fix
+    image: avalonmediasystem/fedora:4.7.5-s3fix-newer_pg_driver
     logging:
       driver: "awslogs"
       options:
