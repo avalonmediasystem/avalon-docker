@@ -1,0 +1,4 @@
+FROM        avalonmediasystem/fedora:4.7.5-s3fix
+LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
+ARG         FEDORA_VERSION=4.7.5
+ADD         --chown=jetty:jetty fcrepo-webapp-${FEDORA_VERSION}.war ${JETTY_BASE}/fedora/fedora.war
