@@ -17,14 +17,28 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
   * `sudo chmod a+w masterfiles` to setup write permission for shared directory
   * `docker-compose pull` to get the prebuilt images from [Dockerhub](dockerhub.com)
   * `docker-compose up` to stand up the stack
-
-To access the site, visit http://localhost in your browser.
+4. Create a user account by visiting http://localhost/users/signup in your browser.
+5. Make the user an admin by running `docker-compose exec avalon bundle exec rake avalon:user:admin` 
 
 ### Notes
 * `docker-compose logs <service_name>` to see the container(s) logs
 * `docker-compose build --no-cache <service_name>` to build the image(s) from scratch
 * `docker ps` to see all running containers
 * `docker exec -it avalondocker_avalon_1 /bin/bash` to log into Avalon docker container
+
+## Troubleshooting
+* If the avalon and fedora containers do not come up the first time you run `docker-compose up` try restarting everything:
+  ```
+  docker-compose down
+  docker-compose up
+  ```
+* If you have problems with solr or fedora not starting then add the following to their declarations in docker-compose.yml:
+  ```
+      ulimits:
+        nofile:
+          soft: 65536
+          hard: 65536
+  ```
 
 ## Advanced Usage
 
