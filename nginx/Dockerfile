@@ -1,4 +1,4 @@
-FROM        phusion/baseimage:0.11 as builder
+FROM        phusion/baseimage:jammy-1.0.1 as builder
 RUN         DEBIAN_FRONTEND=noninteractive; \
             apt-get update \
          && apt-get install -y \ 
@@ -18,7 +18,7 @@ ADD         build-nginx.sh /usr/src/build-nginx.sh
 RUN         /usr/src/build-nginx.sh
 
 
-FROM        phusion/baseimage:0.11
+FROM        phusion/baseimage:jammy-1.0.1
 LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
 
 COPY        --from=builder /usr/local/nginx /usr/local/nginx
