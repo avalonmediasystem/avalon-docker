@@ -11,7 +11,8 @@ http {
   server {
     listen $AVALON_STREAMING_PORT;
 
-    error_log stderr debug;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log debug;
 
     vod_mode remote;
     vod_upstream_location /s3;
