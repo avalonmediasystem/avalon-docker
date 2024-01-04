@@ -17,7 +17,7 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
   * `sudo chmod a+w masterfiles` to setup write permission for shared directory
   * `docker-compose pull` to get the prebuilt images from [Dockerhub](dockerhub.com)
   * `docker-compose up` to stand up the stack
-4. Create a user account by visiting http://localhost/users/signup in your browser.
+4. Create a user account by visiting http://localhost/users/sign_up in your browser.
 5. Make the user an admin by running `docker-compose exec avalon bundle exec rake avalon:user:admin` 
 
 ### Notes
