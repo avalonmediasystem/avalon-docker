@@ -33,21 +33,17 @@ services:
       - S3_REGION=${AWS_REGION}
       - S3_BUCKET=${AVALON_STREAMING_BUCKET}
   solr:
-    image: avalonmediasystem/solr:latest
-    build:
-      context: ./solr
-      args:
-        - AVALON_BRANCH=develop
+    image: solr:9
     logging:
       driver: "awslogs"
       options:
         awslogs-group: "${SOLR_LOGGROUP}"
         awslogs-create-group: "true"
     volumes:
-      - /srv/solr_data:/opt/solr/server/solr/mycores
+      - ./solr/conf:/opt/solr/avalon_conf
+      - /srv/solr_data:/var/solr
       - /srv/solr_backups:/backups
-    entrypoint:
-      - docker-entrypoint.sh
+    command:
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
