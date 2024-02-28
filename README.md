@@ -14,7 +14,7 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
 1. Clone this Repo
 2. Copy dotenv.example to .env and fill in the passwords and Rails secret key base.
 3. From inside the avalon-docker directory
-  * `sudo chmod a+w masterfiles` to setup write permission for shared directory
+  * `sudo chmod a+w masterfiles solr_data` to setup write permissions for shared directories
   * `docker-compose pull` to get the prebuilt images from [Dockerhub](dockerhub.com)
   * `docker-compose up` to stand up the stack
 4. Create a user account by visiting http://localhost/users/sign_up in your browser.
