@@ -56,7 +56,7 @@ services:
   avalon: &avalon
     image: avalonmediasystem/avalon:7
     build:
-      context: https://github.com/avalonmediasystem/avalon.git#v7.7.1
+      context: https://github.com/avalonmediasystem/avalon.git#v7.7.2
       target: prod
     command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
     depends_on:
