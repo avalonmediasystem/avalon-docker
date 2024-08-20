@@ -139,6 +139,8 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
+      - SETTINGS__ACTIVE_STORAGE__SERVICE
+      - SETTINGS__ACTIVE_STORAGE__BUCKET
     healthcheck:
       test: curl --fail -s http://localhost:3000/ || exit 1
       interval: 2m30s
