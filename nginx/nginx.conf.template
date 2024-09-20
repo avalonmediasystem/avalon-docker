@@ -10,7 +10,7 @@ events {
 http {
   server {
     listen $AVALON_STREAMING_PORT;
-    
+
     error_log stderr info;
 
     vod_mode remote;
@@ -26,13 +26,13 @@ http {
     open_file_cache_valid    2m;
     open_file_cache_min_uses 1;
     open_file_cache_errors   on;
-    
+
     location /s3/avalon/ {
       internal;
       proxy_pass http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/;
     }
 
-    location ~ /avalon/(?<stream>.+)/(?<resource>.+\.(?:m3u8|ts)) {
+    location ~ ^/avalon/(?<stream>.+/(?<resource>.+\.(?:m3u8|ts))) {
       vod hls;
       gzip on;
       gzip_types application/x-mpegURL;
@@ -52,6 +52,26 @@ http {
       expires 100d;
     }
 
+    location ~ ^/avalon/(.+/.+\.(?:mp3)) {
+      set $token "$arg_token";
+      add_header X-Stream-Auth-Token "$token";
+
+      sub_filter_types audio/mp3;
+      sub_filter_once off;
+      sub_filter '.mp3' ".mp3?token=$token";
+
+      set $stream $1;
+      auth_request /auth;
+
+      add_header Access-Control-Allow-Headers '*';
+      add_header Access-Control-Expose-Headers 'Server,range,Content-Length,Content-Range';
+      add_header Access-Control-Allow-Methods 'GET, HEAD, OPTIONS';
+      add_header Access-Control-Allow-Origin "*";
+      expires 100d;
+
+      proxy_pass http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/$stream;
+    }
+
     location = /auth {
       resolver 127.0.0.1;
       proxy_pass $AVALON_DOMAIN/authorize.txt?token=$token&name=$stream;
@@ -61,7 +81,6 @@ http {
     }
 
     location /status {
-      access_log off;
       vod_status;
     }
 
