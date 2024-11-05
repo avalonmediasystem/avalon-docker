@@ -82,7 +82,7 @@ services:
       - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora/rest
       - SETTINGS__FFMPEG__PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
-      - MASTER_FILE_STRATEGY=delete
+      - SETTINGS__MASTER_FILE_MANAGEMENT__STRATEGY=delete
       - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
       - MEDIAINFO_PATH=/usr/bin/mediainfo
       - RAILS_ADDITIONAL_HOSTS=avalon
