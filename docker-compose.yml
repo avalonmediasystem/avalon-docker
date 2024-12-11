@@ -19,18 +19,14 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_HOST_AUTH_METHOD=trust
   fedora:
-    image: avalonmediasystem/fedora:4.7.5
-    build:
-      context: ./fedora
-      args:
-        - FEDORA_VERSION=4.7.5
+    image: fcrepo/fcrepo:6-tomcat9
     environment:
       - FEDORA_DB_PASSWORD
-      - JAVA_OPTIONS=-Dfcrepo.postgresql.password=${FEDORA_DB_PASSWORD} -Dfcrepo.postgresql.username=fedora -Dfcrepo.postgresql.host=db -Dfcrepo.modeshape.configuration=classpath:/config/jdbc-postgresql/repository.json -Dfcrepo.home=/data
+      - CATALINA_OPTS=-Dfcrepo.autoversioning.enabled=false -Dfcrepo.db.password=${FEDORA_DB_PASSWORD} -Dfcrepo.db.user=fedora -Dfcrepo.db.url=jdbc:postgresql://db:5432/fcrepo_cache -Dfcrepo.home=/data
     depends_on:
       - db
     volumes:
-      - fedora:/data
+      - ./fedora_data:/data
   solr:
     image: solr:9
     volumes:
@@ -53,9 +49,9 @@ services:
   redis:
     image: redis:alpine
   avalon: &avalon
-    image: avalonmediasystem/avalon:7
+    image: avalonmediasystem/avalon:8
     build:
-      context: https://github.com/avalonmediasystem/avalon.git#v7.8
+      context: https://github.com/avalonmediasystem/avalon.git#v8.0
       target: prod
     command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
     depends_on:
@@ -79,7 +75,7 @@ services:
       - ENCODE_WORK_DIR=/streamfiles
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
-      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fedora/rest
+      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fcrepo/rest
       - SETTINGS__FFMPEG__PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
       - SETTINGS__MASTER_FILE_MANAGEMENT__STRATEGY=delete
