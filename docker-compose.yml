@@ -1,23 +1,15 @@
-version: '3.2'
-
-volumes:
-  fedora:
-
 services:
   fedora:
-    image: avalonmediasystem/fedora:4.7.5-s3fix-newer_pg_driver
+    image: fcrepo/fcrepo:6-tomcat9
     logging:
       driver: "awslogs"
       options:
         awslogs-group: "${FEDORA_LOGGROUP}"
         awslogs-create-group: "true"
     environment:
-      - MODESHAPE_CONFIG=${FEDORA_MODESHAPE_CONFIG}
-      - JAVA_OPTIONS=${FEDORA_OPTIONS}
-    volumes:
-      - fedora:/data
+      - CATALINA_OPTS=${FEDORA_OPTIONS}
     healthcheck:
-      test: curl --fail -s http://localhost:8080/ || exit 1
+      test: curl --fail -s http://fedoraAdmin:fedoraAdmin@localhost:8080/fcrepo/rest/fcr:systeminfo || exit 1
       interval: 1m30s
       timeout: 10s
       retries: 3
@@ -110,7 +102,7 @@ services:
       - ENCODE_WORK_DIR=/tmp
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
-      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/rest
+      - FEDORA_URL=http://fedoraAdmin:fedoraAdmin@fedora:8080/fcrepo/rest
       - SETTINGS__FFMPEG__PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
