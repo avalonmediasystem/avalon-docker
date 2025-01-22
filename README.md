@@ -1,20 +1,13 @@
 # avalon-docker
-The project contains the Dockerfiles for all the necessary components of [Avalon Media System](http://github.com/avalonmediasystem/avalon). For developing with Avalon, the docker-compose script in [Avalon 6.x](http://github.com/avalonmediasystem/avalon) and [Avalon 7.x](http://github.com/samvera-labs/avalon-bundle) are recommended.
+The project contains the Dockerfiles for all the necessary components of [Avalon Media System](http://github.com/avalonmediasystem/avalon). For developing with Avalon, the docker-compose script in [Avalon](http://github.com/avalonmediasystem/avalon) is recommended.
+
+This branch is only intended to be used with [avalon-terraform](http://github.com/avalonmediasystem/avalon-terraform) on AWS.  For other use cases, use the main branch.
 
 ## Prerequisite
 
 ### Linux
 1. Install [Docker](https://docs.docker.com/engine/installation/linux/centos/)
 2. Install [Docker-Compose](https://docs.docker.com/compose/install/)
-
-### OSX
-* Install [Docker Toolbox for OS X](https://www.docker.com/products/docker-toolbox)
-* Run
-  * `docker-machine stop default`
-  * `docker-machine start default`
-  * `docker-machine env`
-  * `eval $(docker-machine env)`
-  * `docker-machine start default`
 
 ## Usage
 1. Clone this Repo
@@ -28,10 +21,3 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
 * `docker-compose build --no-cache <service_name>` to build the image(s) from scratch
 * `docker ps` to see all running containers
 * `docker exec -it avalondocker_avalon_1 /bin/bash` to log into Avalon docker container
-
-## Advanced Usage
-
-### Running on a server
-Set these Avalon env vars:
-* `SETTINGS__DOMAIN=http://<ip address or hostname>/`
-* `STREAMING_HOST=<ip address or hostname>` so Avalon crafts the right streaming URLs
