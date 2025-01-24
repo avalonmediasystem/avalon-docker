@@ -36,6 +36,8 @@ services:
       - solr-precreate
       - avalon
       - /opt/solr/avalon_conf
+    environment:
+      - SOLR_MODULES=analysis-extras,extraction
   hls:
     image: avalonmediasystem/nginx
     build:
