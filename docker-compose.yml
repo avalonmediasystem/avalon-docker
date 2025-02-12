@@ -65,6 +65,8 @@ services:
       options:
         awslogs-group: "${HLS_LOGGROUP}"
         awslogs-create-group: "true"
+    volumes:
+      - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
     environment:
       - PROXY_PASS_URL=http://s3-helper:8080/
       - AUTH_URL=http://avalon:3000
