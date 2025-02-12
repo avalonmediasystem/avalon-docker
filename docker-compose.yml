@@ -46,6 +46,7 @@ services:
       AVALON_DOMAIN: http://avalon:3000
     volumes:
       - streaming:/data
+      - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
     ports:
        - "8880:80"
   redis:
