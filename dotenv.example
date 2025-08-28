@@ -1,5 +1,5 @@
 # Required Settings
-AVALON_DOCKER_REPO=avalonmediasystem/avalon:7.0-aws
+AVALON_DOCKER_REPO=avalonmediasystem/avalon:8.1
 AVALON_BRANCH=demo
 AVALON_REV=2
 AVALON_REPO=https://github.com/avalonmediasystem/avalon.git
