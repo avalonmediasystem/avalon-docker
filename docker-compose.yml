@@ -54,7 +54,7 @@ services:
   avalon: &avalon
     image: avalonmediasystem/avalon:8
     build:
-      context: https://github.com/avalonmediasystem/avalon.git#v8.0
+      context: https://github.com/avalonmediasystem/avalon.git#v8.1
       target: prod
     command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
     depends_on:
@@ -82,14 +82,14 @@ services:
       - SETTINGS__FFMPEG__PATH=/usr/bin/ffmpeg
       - MASTER_FILE_PATH
       - SETTINGS__MASTER_FILE_MANAGEMENT__STRATEGY=delete
-      - MATTERHORN_URL=http://matterhorn_system_account:CHANGE_ME@matterhorn:8080/
       - MEDIAINFO_PATH=/usr/bin/mediainfo
+      - PIDFILE=tmp/pids/server.pid
+      - PUMA_STATE_PATH=tmp/puma.state
       - RAILS_ADDITIONAL_HOSTS=avalon
       - RAILS_ENV=production
       - RAILS_LOG_TO_STDOUT=true
       - RAILS_SERVE_STATIC_FILES=true
-      - SETTINGS__REDIS__HOST=redis
-      - SETTINGS__REDIS__PORT=6379
+      - SETTINGS__REDIS__URL=redis://redis:6379/0
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
       - SETTINGS__STREAMING__STREAM_TOKEN_TTL=20
