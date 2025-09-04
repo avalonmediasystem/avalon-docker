@@ -46,3 +46,8 @@ The project contains the Dockerfiles for all the necessary components of [Avalon
 Set these Avalon env vars:
 * `SETTINGS__DOMAIN=http://<ip address or hostname>/`
 * `STREAMING_HOST=<ip address or hostname>` so Avalon crafts the right streaming URLs
+
+## nginx HLS image
+The nginx HLS image is a special build of nginx with the [nginx-vod-module](https://github.com/kaltura/nginx-vod-module) built into it.  This image has a default nginx config that works with either a mounted content directory or a remote minio/s3 bucket.  For local mounted content, set VOD_MODE to 'local' (default) and mount the content to `/data` in the container.  For remote content, set VOD_MODE to 'remote' and set AVALON_STREAMING_BUCKET_URL to the derivatives bucket (default is `http://minio:9000/derivatives/` for use with a minio container in a docker-compose environment).
+
+If you need to make customizations, make a local copy of nginx.conf.template and mount it into the container at `/etc/nginx/nginx.conf.template`.  This template file has variables that are replaced by environment variables on startup: AVALON_DOMAIN, AVALON_STREAMING_PORT, AVALON_STREAMING_BUCKET_URL, and VOD_MODE.

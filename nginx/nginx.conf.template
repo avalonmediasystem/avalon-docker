@@ -10,7 +10,8 @@ http {
   server {
     listen $AVALON_STREAMING_PORT;
 
-    vod_mode local;
+    vod_mode $VOD_MODE;
+    vod_upstream_location /s3;
     vod_last_modified 'Sun, 19 Nov 2000 08:52:00 GMT';
     vod_last_modified_types *;
     vod_metadata_cache metadata_cache 512m;
@@ -26,8 +27,13 @@ http {
     location /status {
       vod_status;
     }
+
+    location /s3/avalon {
+      internal;
+      proxy_pass $AVALON_STREAMING_BUCKET_URL;
+    }
     
-    location ~ ^/avalon/(?<stream>.+/(?<resource>.+\.(?:m3u8|ts))) {
+    location ~ ^/avalon/(?<stream>.+)\/[^\/]+\.(?:m3u8|ts) {
       alias /data/$stream;
       vod hls;
 
@@ -49,9 +55,9 @@ http {
       expires 100d;
     }
 
-    location ~ ^/avalon/(.+/.+\.(?:mp3)) {
-      set $stream $1;
+    location ~ ^/avalon/(?<stream>.+/.+\.(?:mp3)) {
       alias /data/$stream;
+      vod none;
 
       set $token "$arg_token";
       add_header X-Stream-Auth-Token "$token";
