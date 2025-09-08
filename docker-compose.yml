@@ -100,11 +100,12 @@ services:
       - MASTER_FILE_PATH
       - MASTER_FILE_STRATEGY=delete
       - MEDIAINFO_PATH=/usr/bin/mediainfo
+      - PIDFILE=tmp/pids/server.pid
+      - PUMA_STATE_PATH=tmp/puma.state
       - RAILS_ADDITIONAL_HOSTS=avalon
       - RAILS_ENV=production
       - RAILS_SERVE_STATIC_FILES=true
-      - SETTINGS__REDIS__HOST=${ELASTICACHE_HOST}
-      - SETTINGS__REDIS__PORT=6379
+      - SETTINGS__REDIS__URL=redis://${ELASTICACHE_HOST}:6379/0
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
       - SMTP_DOMAIN
