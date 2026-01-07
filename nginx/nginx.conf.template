@@ -6,18 +6,15 @@ events {
   worker_connections 1024;
 }
 
-
 http {
   server {
     listen $AVALON_STREAMING_PORT;
 
-    error_log stderr info;
-
-    vod_mode remote;
+    vod_mode $VOD_MODE;
     vod_upstream_location /s3;
     vod_last_modified 'Sun, 19 Nov 2000 08:52:00 GMT';
     vod_last_modified_types *;
-    vod_metadata_cache metadata_cache 1024m;
+    vod_metadata_cache metadata_cache 512m;
     vod_response_cache response_cache 128m;
     vod_hls_absolute_index_urls off;
     vod_hls_absolute_master_urls off;
@@ -27,13 +24,19 @@ http {
     open_file_cache_min_uses 1;
     open_file_cache_errors   on;
 
-    location /s3/avalon/ {
-      internal;
-      proxy_pass http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/;
+    location /status {
+      vod_status;
     }
 
-    location ~ ^/avalon/(?<stream>.+/(?<resource>.+\.(?:m3u8|ts))) {
+    location /s3/avalon {
+      internal;
+      proxy_pass $AVALON_STREAMING_BUCKET_URL;
+    }
+
+    location ~ ^/avalon/(?<stream>.+)\/[^\/]+\.(?:m3u8|ts) {
+      alias /data/$stream;
       vod hls;
+
       gzip on;
       gzip_types application/x-mpegURL;
 
@@ -48,19 +51,24 @@ http {
       add_header Access-Control-Allow-Headers '*';
       add_header Access-Control-Expose-Headers 'Server,range,Content-Length,Content-Range';
       add_header Access-Control-Allow-Methods 'GET, HEAD, OPTIONS';
-      add_header Access-Control-Allow-Origin "*";
+      add_header Access-Control-Allow-Origin '*';
       expires 100d;
     }
 
-    location ~ ^/avalon/(.+/.+\.(?:mp3)) {
+    location ~ ^/avalon/(?<stream>.+/.+\.(?:mp3)) {
+      alias /data/$stream;
+      vod none;
+
       set $token "$arg_token";
       add_header X-Stream-Auth-Token "$token";
+
+      gzip on;
+      gzip_types audio/mp3;
 
       sub_filter_types audio/mp3;
       sub_filter_once off;
       sub_filter '.mp3' ".mp3?token=$token";
 
-      set $stream $1;
       auth_request /auth;
 
       add_header Access-Control-Allow-Headers '*';
@@ -68,8 +76,6 @@ http {
       add_header Access-Control-Allow-Methods 'GET, HEAD, OPTIONS';
       add_header Access-Control-Allow-Origin "*";
       expires 100d;
-
-      proxy_pass http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/$stream;
     }
 
     location = /auth {
@@ -78,10 +84,6 @@ http {
       proxy_pass_request_body off;
       proxy_set_header Content-Length "";
       proxy_set_header X-Original-URI $request_uri;
-    }
-
-    location /status {
-      vod_status;
     }
 
     location /crossdomain.xml {
