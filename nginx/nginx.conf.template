@@ -28,7 +28,7 @@ http {
       vod_status;
     }
 
-    location /s3/avalon {
+    location /s3/avalon/ {
       internal;
       proxy_pass $AVALON_STREAMING_BUCKET_URL;
     }
