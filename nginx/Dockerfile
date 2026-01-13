@@ -1,4 +1,5 @@
-FROM        phusion/baseimage:0.11 as builder
+FROM        phusion/baseimage:noble-1.0.2 AS builder
+RUN         sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
 RUN         DEBIAN_FRONTEND=noninteractive; \
             apt-get update \
          && apt-get install -y \ 
@@ -18,7 +19,7 @@ ADD         build-nginx.sh /usr/src/build-nginx.sh
 RUN         /usr/src/build-nginx.sh
 
 
-FROM        phusion/baseimage:0.11
+FROM        phusion/baseimage:noble-1.0.2
 LABEL       maintainer="Michael B. Klein <michael.klein@northwestern.edu>, Phuong Dinh <pdinh@indiana.edu>"
 
 COPY        --from=builder /usr/local/nginx /usr/local/nginx
@@ -28,6 +29,7 @@ RUN         apt-get update \
          && apt-get install -y \
             dnsmasq \
             gettext-base \
+            libpcre3 \
          && apt-get clean
 
 EXPOSE      1935
