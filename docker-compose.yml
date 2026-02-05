@@ -59,6 +59,9 @@ services:
       - AVALON_STREAMING_BUCKET
       - AVALON_STREAMING_BUCKET_URL=http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/
       - VOD_MODE=remote
+        S3_BUCKET_NAME=$AVALON_STREAMING_BUCKET
+        AWS_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY
     ports:
       - "8880:80"
     restart: always

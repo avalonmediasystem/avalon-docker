@@ -13,7 +13,8 @@ RUN         DEBIAN_FRONTEND=noninteractive; \
             libssl-dev \
             dnsmasq \
             # gettext-base provides 'envsubst', used by nginx.sh
-            gettext-base
+            gettext-base \
+            libxslt-dev
 
 ADD         build-nginx.sh /usr/src/build-nginx.sh
 RUN         /usr/src/build-nginx.sh
@@ -43,6 +44,7 @@ RUN         mkdir /data && chmod 0777 /data \
 
 ADD         stat.xsl  /etc/nginx/stat.xsl
 ADD         nginx.conf.template /etc/nginx/nginx.conf.template
+ADD         signature2.js /etc/nginx/include/signature2.js
 ADD         dnsmasq.sh /etc/service/dnsmasq/run
 ADD         nginx.sh /etc/service/nginx/run
 
