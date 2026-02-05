@@ -2,11 +2,19 @@ user nginx;
 worker_processes 4;
 daemon off;
 
+env S3_BUCKET_NAME;
+env AWS_ACCESS_KEY_ID;
+env AWS_SECRET_ACCESS_KEY;
+
 events {
   worker_connections 1024;
 }
  
 http {
+  js_import /etc/nginx/include/signature2.js;
+  js_set $s3auth        signature2.signature;
+  js_set $httpDate      signature2.s3date;
+
   server {
     listen $AVALON_STREAMING_PORT;
 
@@ -30,6 +38,9 @@ http {
 
     location /s3/avalon/ {
       internal;
+
+      proxy_set_header Authorization        $s3auth;
+      proxy_set_header Date                 $httpDate;
       proxy_pass $AVALON_STREAMING_BUCKET_URL;
     }
     
