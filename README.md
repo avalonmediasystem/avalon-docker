@@ -48,6 +48,14 @@ Set these Avalon env vars:
 * `STREAMING_HOST=<ip address or hostname>` so Avalon crafts the right streaming URLs
 
 ## nginx HLS image
-The nginx HLS image is a special build of nginx with the [nginx-vod-module](https://github.com/kaltura/nginx-vod-module) built into it.  This image has a default nginx config that works with either a mounted content directory or a remote minio/s3 bucket.  For local mounted content, set VOD_MODE to 'local' (default) and mount the content to `/data` in the container.  For remote content, set VOD_MODE to 'remote' and set AVALON_STREAMING_BUCKET_URL to the derivatives bucket (default is `http://minio:9000/derivatives/` for use with a minio container in a docker-compose environment).
+The nginx HLS image is a special build of nginx with the [nginx-vod-module](https://github.com/kaltura/nginx-vod-module) built into it.  This image has a default nginx config that works with either a mounted content directory or a remote minio/s3 bucket.  For local mounted content, set VOD_MODE to 'local' (default) and mount the content to `/data` in the container.  For remote content, set VOD_MODE to 'remote' and set AVALON_STREAMING_BUCKET_URL to the derivatives bucket (default is `http://minio:9000/derivatives/` for use with a minio container in a docker-compose environment and `http://$AVALON_STREAMING_BUCKET.s3.amazonaws.com/` for use in an AWS cloud environment).
 
-If you need to make customizations, make a local copy of nginx.conf.template and mount it into the container at `/etc/nginx/nginx.conf.template`.  This template file has variables that are replaced by environment variables on startup: AVALON_DOMAIN, AVALON_STREAMING_PORT, AVALON_STREAMING_BUCKET_URL, and VOD_MODE.
+If you need to make customizations, make a local copy of nginx.conf.template and mount it into the container at `/etc/nginx/nginx.conf.template`.  This template file has variables that are replaced by environment variables on startup: AVALON_DOMAIN, AVALON_STREAMING_PORT, AVALON_STREAMING_BUCKET_URL, VOD_MODE, and S3_SERVER.
+
+### Authenticating and streaming from S3/S3-like storage
+The nginx HLS image has the ability to stream from S3/S3-like storage.  The nginx config will compute the required S3 v4 auth headers for connecting to buckets requiring authentication.  There are five environment variables that help support this:
+- S3_BUCKET_NAME - The storage bucket name.  Required but is equivalent to AVALON_STREAMING_BUCKET
+- S3_SERVER (optional) - The S3 service hostname.  Only needed if not using AWS S3.  Defaults to AVALON_STREAMING_BUCKET.s3.amazonaws.com
+- S3_REGION (optional) - The S3 region.  Defaults to us-east-1.
+- AWS_ACCESS_KEY_ID (required for non-public storage) - The access key for authenticating to storage
+- AWS_SECRET_ACCESS_KEY (required for non-public storage) - The secret key for authenticating to storage
