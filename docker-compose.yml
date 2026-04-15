@@ -43,7 +43,8 @@ services:
     build:
       context: ./nginx
     environment:
-      AVALON_DOMAIN: http://avalon:3000
+      - AVALON_DOMAIN=http://avalon:3000
+      - VOD_MODE=local
     volumes:
       - streaming:/data
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template

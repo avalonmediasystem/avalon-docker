@@ -2,11 +2,21 @@ user nginx;
 worker_processes 4;
 daemon off;
 
+env AWS_ACCESS_KEY_ID;
+env AWS_SECRET_ACCESS_KEY;
+env S3_BUCKET_NAME;
+env S3_REGION;
+env S3_SERVER;
+
 events {
   worker_connections 1024;
 }
  
 http {
+  js_import /etc/nginx/include/signature4.js;
+  js_set $s3auth        signature4.signature;
+  js_set $awsDate       signature4.getAmzDatetime;
+
   server {
     listen $AVALON_STREAMING_PORT;
 
@@ -30,6 +40,12 @@ http {
 
     location /s3/avalon/ {
       internal;
+
+      proxy_set_header Authorization              $s3auth;
+      proxy_set_header Host                       $S3_SERVER;
+      proxy_set_header x-amz-date                 $awsDate;
+      # Hardcode hash for empty string since we're only ever doing GET requests
+      proxy_set_header x-amz-content-sha256       "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
       proxy_pass $AVALON_STREAMING_BUCKET_URL;
     }
     
