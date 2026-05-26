@@ -39,7 +39,7 @@ services:
     environment:
       - SOLR_MODULES=analysis-extras,extraction
   hls:
-    image: avalonmediasystem/nginx
+    image: avalonmediasystem/nginx:avalon-8.2
     build:
       context: ./nginx
     environment:
@@ -53,9 +53,9 @@ services:
   redis:
     image: redis:alpine
   avalon: &avalon
-    image: avalonmediasystem/avalon:8
+    image: avalonmediasystem/avalon:8.2
     build:
-      context: https://github.com/avalonmediasystem/avalon.git#v8.1.1
+      context: https://github.com/avalonmediasystem/avalon.git#v8.2.0
       target: prod
     command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
     depends_on:
