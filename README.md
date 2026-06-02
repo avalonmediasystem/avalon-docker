@@ -51,7 +51,8 @@ The nginx HLS image is a special build of nginx with the [nginx-vod-module](http
 If you need to make customizations, make a local copy of nginx.conf.template and mount it into the container at `/etc/nginx/nginx.conf.template`.  This template file has variables that are replaced by environment variables on startup: AVALON_DOMAIN, AVALON_STREAMING_PORT, AVALON_STREAMING_BUCKET_URL, VOD_MODE, and S3_SERVER.
 
 ### Authenticating and streaming from S3/S3-like storage
-The nginx HLS image has the ability to stream from S3/S3-like storage.  The nginx config will compute the required S3 v4 auth headers for connecting to buckets requiring authentication.  There are five environment variables that help support this:
+The nginx HLS image has the ability to stream from S3/S3-like storage.  The nginx config will compute the required S3 v4 auth headers for connecting to buckets requiring authentication.  There are six environment variables that help support this:
+- S3_AUTH - Enable or disable S3 auth headers.  Required.  Defaults to false.
 - S3_BUCKET_NAME - The storage bucket name.  Required but is equivalent to AVALON_STREAMING_BUCKET
 - S3_SERVER (optional) - The S3 service hostname.  Only needed if not using AWS S3.  Defaults to AVALON_STREAMING_BUCKET.s3.amazonaws.com
 - S3_REGION (optional) - The S3 region.  Defaults to us-east-1.
