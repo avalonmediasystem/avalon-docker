@@ -43,21 +43,19 @@ http {
 
       # proxy_set_header skips setting header if value is empty so only set if s3 auth is enabled
       set $auth_authz '';
-      set $auth_host '';
       set $auth_date '';
       set $auth_sha '';
 
       set $do_s3_auth $S3_AUTH;
       if ($do_s3_auth) {
         set $auth_authz $s3auth;
-        set $auth_host $S3_SERVER;
         set $auth_date $awsDate;
         # Hardcode hash for empty string since we're only ever doing GET requests
         set $auth_sha "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
       }
 
       proxy_set_header Authorization              $auth_authz;
-      proxy_set_header Host                       $auth_host;
+      proxy_set_header Host                       $S3_SERVER;
       proxy_set_header x-amz-date                 $auth_date;
       proxy_set_header x-amz-content-sha256       $auth_sha;
 
