@@ -16,6 +16,7 @@ http {
   js_import /etc/nginx/include/signature4.js;
   js_set $s3auth        signature4.signature;
   js_set $awsDate       signature4.getAmzDatetime;
+  js_set $encodedStream signature4.encode_stream;
 
   server {
     listen $AVALON_STREAMING_PORT;
@@ -108,8 +109,11 @@ http {
     }
 
     location = /auth {
+      # The named capture $stream gets unencoded causing the proxy_pass request to get truncated for filenames with spaces
+      # Instead create a new variable using the js function the uses `encodeURI` to properly encode special characters
+      set $encoded_stream $encodedStream;
       resolver 127.0.0.1;
-      proxy_pass $AVALON_DOMAIN/authorize.txt?token=$token&name=$stream;
+      proxy_pass $AVALON_DOMAIN/authorize.txt?token=$token&name=$encoded_stream;
       proxy_pass_request_body off;
       proxy_set_header Content-Length "";
       proxy_set_header X-Original-URI $request_uri;
