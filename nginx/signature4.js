@@ -67,10 +67,21 @@ function signature(r) {
 
 function uri_path(r) {
   const bucket = process.env['S3_BUCKET_NAME'];
-  return '/' + bucket + '/' + r.variables.stream;
+  // The stream variable comes from a named capture in a location regex which get unencoded by nginx.
+  // This can be problematic if the stream path contains spaces or special characters which would cause the 
+  // canonicalRequest in the signature generation not match what the s3 server is expecting leading to failed auth attempts.
+  // The standard encodeURI JS function will properly encode the stream path preserving unencoded forward slashes while 
+  // encoding special characters and spaces.
+  const stream = encodeURI(r.variables.stream);
+  return '/' + bucket + '/' + stream;
+}
+
+function encode_stream(r) {
+  return encodeURI(r.variables.stream);
 }
 
 export default {
     signature,
-    getAmzDatetime
+    getAmzDatetime,
+    encode_stream
 }
