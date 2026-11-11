@@ -28,7 +28,7 @@ services:
     volumes:
       - ./fedora_data:/data
   solr:
-    image: solr:9
+    image: solr:9.10
     volumes:
       - ./solr/conf:/opt/solr/avalon_conf
       - ./solr_data:/var/solr
