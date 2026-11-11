@@ -15,7 +15,7 @@ services:
       retries: 3
     restart: always
   solr:
-    image: solr:9
+    image: solr:9.10
     logging:
       driver: "awslogs"
       options:
