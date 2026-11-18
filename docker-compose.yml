@@ -7,7 +7,7 @@ services:
         awslogs-group: "${FEDORA_LOGGROUP}"
         awslogs-create-group: "true"
     environment:
-      - CATALINA_OPTS=${FEDORA_OPTIONS}
+      - CATALINA_OPTS=${FEDORA_OPTIONS} -XX:-UseBASE64Intrinsics
     healthcheck:
       test: curl --fail -s http://fedoraAdmin:fedoraAdmin@localhost:8080/fcrepo/rest/fcr:systeminfo || exit 1
       interval: 1m30s
@@ -31,6 +31,7 @@ services:
       - /opt/solr/avalon_conf
     environment:
       - SOLR_MODULES=analysis-extras,extraction
+      - SOLR_OPTS=-XX:-UseBASE64Intrinsics
     healthcheck:
       test: curl --fail -s http://localhost:8983/ || exit 1
       interval: 1m30s
