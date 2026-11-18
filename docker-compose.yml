@@ -22,7 +22,7 @@ services:
     image: fcrepo/fcrepo:6-tomcat9
     environment:
       - FEDORA_DB_PASSWORD
-      - CATALINA_OPTS=-Dfcrepo.autoversioning.enabled=false -Dfcrepo.db.password=${FEDORA_DB_PASSWORD} -Dfcrepo.db.user=fedora -Dfcrepo.db.url=jdbc:postgresql://db:5432/fcrepo_cache -Dfcrepo.home=/data
+      - CATALINA_OPTS=-Dfcrepo.autoversioning.enabled=false -Dfcrepo.db.password=${FEDORA_DB_PASSWORD} -Dfcrepo.db.user=fedora -Dfcrepo.db.url=jdbc:postgresql://db:5432/fcrepo_cache -Dfcrepo.home=/data -XX:-UseBASE64Intrinsics
     depends_on:
       - db
     volumes:
@@ -38,6 +38,7 @@ services:
       - /opt/solr/avalon_conf
     environment:
       - SOLR_MODULES=analysis-extras,extraction
+      - SOLR_OPTS=-XX:-UseBASE64Intrinsics
   hls:
     image: avalonmediasystem/nginx:avalon-8.2
     build:
